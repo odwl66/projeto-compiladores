@@ -1,0 +1,47 @@
+import compiler.util.*;
+
+parser code  {:
+ public void report_error(String message, Object info){
+   StringBuffer m = new StringBuffer("Error: " + message + "\n");
+   System.err.print(m);
+ }
+
+ public void report_fatal_error(String message, Object info) {
+   report_error(message, info);
+   throw new RuntimeException("Fatal Syntax Error");
+ }
+:};
+
+terminal PLUS, MINUS, DIV, MULT;
+terminal LPAREN, RPAREN;
+terminal java.lang.Number INTEGER_LITERAL;
+
+non terminal expression, expression_unity, operator;
+non terminal compilation_unit;
+
+precedence left PLUS, MINUS;
+precedence left MULT, DIV;
+
+start with compilation_unit;
+
+compilation_unit ::=
+   expression
+;
+
+expression ::=
+	expression_unity operator expression
+	| expression_unity
+;
+
+expression_unity ::=
+	MINUS expression_unity
+	| LPAREN expression RPAREN
+	| INTEGER_LITERAL
+;
+
+operator ::=
+	PLUS {: Logger.print("+"); :}
+	| MINUS {: Logger.print("-"); :}
+	| MULT {: Logger.print("*"); :}
+	| DIV {: Logger.print("/"); :}
+;
