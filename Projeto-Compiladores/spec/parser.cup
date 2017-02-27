@@ -12,36 +12,31 @@ parser code  {:
  }
 :};
 
-terminal PLUS, MINUS, DIV, MULT;
-terminal LPAREN, RPAREN;
-terminal java.lang.Number INTEGER_LITERAL;
+terminal SEMICOLON, DOT, LPAREN, RPAREN;
+terminal PROGRAM;
 
-non terminal expression, expression_unity, operator;
-non terminal compilation_unit;
+non terminal program;
+non terminal program_heading, block;
+non terminal identifier, identifier_list;
 
-precedence left PLUS, MINUS;
-precedence left MULT, DIV;
+start with program;
 
-start with compilation_unit;
-
-compilation_unit ::=
-   expression
+program ::=
+    program_heading block DOT {:Logger.print("Program definition");:}
 ;
 
-expression ::=
-	expression_unity operator expression
-	| expression_unity
+program_heading ::=
+    PROGRAM identifier LPAREN identifier_list RPAREN SEMICOLON {:Logger.print("Program header definition");:}
 ;
 
-expression_unity ::=
-	MINUS expression_unity
-	| LPAREN expression RPAREN
-	| INTEGER_LITERAL
+identifier_list ::= 
+
 ;
 
-operator ::=
-	PLUS {: Logger.print("+"); :}
-	| MINUS {: Logger.print("-"); :}
-	| MULT {: Logger.print("*"); :}
-	| DIV {: Logger.print("/"); :}
+identifier ::=
+
+;
+
+block ::= 
+
 ;

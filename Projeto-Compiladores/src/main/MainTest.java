@@ -12,7 +12,7 @@ import java.io.IOException;
 public class MainTest {
 	
 	public static void main(String[] args) throws IOException {
-		String filePath = "test/Test";
+		String filePath = "test/TesteAnaliseSintatica1";
 		Scanner scanner = null;
 		try {
 			scanner = new Scanner(new BufferedReader(new FileReader(filePath)));

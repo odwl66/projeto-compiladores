@@ -20,22 +20,51 @@ import compiler.core.Token;
   }
 %}
 
+/* Identifiers */
+
+/* White spaces*/
+LineTerminator = \r|\n|\r\n
+WhiteSpace     = {LineTerminator} | [ \t\f]
+
 /* Integer literals */
-DecimalLiteral = 0 | [1-9][0-9]*
+
+/* Float literals */
+
+/* String and Character literals */
+
+/* Comments */
 
 %%
 
-{DecimalLiteral}                { return symbol(sym.INTEGER_LITERAL, new Integer(yytext())); }
+<YYINITIAL> {
 
-/* White spaces */
-" "							    { /*just ignore it*/ }
+    /* Keywords */
+    "program"                      { return symbol(sym.PROGRAM); }
+    
+    /* Boolean literals*/
 
-/* Arithmetical operators*/
-"+"								{ return symbol(sym.PLUS); }
-"-"								{ return symbol(sym.MINUS); }
-"*"								{ return symbol(sym.MULT); }
-"/"								{ return symbol(sym.DIV); }
+    /* Identifier*/
 
-/* Parenthesis */
-"("								{ return symbol(sym.LPAREN); }
-")"								{ return symbol(sym.RPAREN); }
+    /* Comments*/
+
+    /* Separators */
+    "("                             { return symbol(sym.LPAREN); }
+    ")"                             { return symbol(sym.RPAREN); }
+    "."   		  				    { return symbol(sym.DOT); }
+    ";"                             { return symbol(sym.SEMICOLON); }
+
+    /* String literal */
+
+    /* Character literal */
+
+    /* White spaces */
+    {WhiteSpace}				    { /*just ignore it*/ }
+
+    /* Arithmetical operators*/
+    
+    /* Operators */
+     
+    /* Logical Operators*/
+
+    /* Assignment */
+}
