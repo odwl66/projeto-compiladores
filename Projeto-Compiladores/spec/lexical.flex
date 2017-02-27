@@ -21,6 +21,7 @@ import compiler.core.Token;
 %}
 
 /* Identifiers */
+Identifier = [:jletter:][:jletterdigit:]*
 
 /* White spaces*/
 LineTerminator = \r|\n|\r\n
@@ -44,13 +45,15 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     /* Boolean literals*/
 
     /* Identifier*/
-
+	{Identifier} 					{ return symbol(sym.IDENTIFIER,yytext());}
+	
     /* Comments*/
 
     /* Separators */
     "("                             { return symbol(sym.LPAREN); }
     ")"                             { return symbol(sym.RPAREN); }
     "."   		  				    { return symbol(sym.DOT); }
+    ","                             { return symbol(sym.COMMA); }
     ";"                             { return symbol(sym.SEMICOLON); }
 
     /* String literal */

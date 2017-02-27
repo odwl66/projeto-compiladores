@@ -12,12 +12,13 @@ parser code  {:
  }
 :};
 
-terminal SEMICOLON, DOT, LPAREN, RPAREN;
+terminal COMMA, SEMICOLON, DOT, LPAREN, RPAREN;
 terminal PROGRAM;
+terminal java.lang.String IDENTIFIER;
 
 non terminal program;
 non terminal program_heading, block;
-non terminal identifier, identifier_list;
+non terminal identifier_list;
 
 start with program;
 
@@ -26,15 +27,12 @@ program ::=
 ;
 
 program_heading ::=
-    PROGRAM identifier LPAREN identifier_list RPAREN SEMICOLON {:Logger.print("Program header definition");:}
+    PROGRAM IDENTIFIER LPAREN identifier_list RPAREN SEMICOLON {:Logger.print("Program header definition");:}
 ;
 
 identifier_list ::= 
-
-;
-
-identifier ::=
-
+	IDENTIFIER   {:Logger.print("Identifier list definition");:}
+	| IDENTIFIER COMMA identifier_list {:Logger.print("Identifier list definition");:}
 ;
 
 block ::= 
