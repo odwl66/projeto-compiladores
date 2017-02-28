@@ -28,6 +28,10 @@ LineTerminator = \r|\n|\r\n
 WhiteSpace     = {LineTerminator} | [ \t\f]
 
 /* Integer literals */
+Sign = "+" | "-"
+DecimalLiteral 	= 0 | [1-9][0-9]*
+DigitSequence 	= {Sign}?{DecimalLiteral}
+IntegerNumber 	= {DigitSequence}
 
 /* Float literals */
 
@@ -41,11 +45,14 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
 
     /* Keywords */
     "program"                      { return symbol(sym.PROGRAM); }
+    "label"                      { return symbol(sym.LABEL); }
     
     /* Boolean literals*/
 
     /* Identifier*/
 	{Identifier} 					{ return symbol(sym.IDENTIFIER,yytext());}
+	
+	{IntegerNumber}                { return symbol(sym.INTEGER_NUMBER, new Integer(yytext())); }
 	
     /* Comments*/
 

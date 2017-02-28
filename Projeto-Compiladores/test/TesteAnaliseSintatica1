@@ -1,1 +1,3 @@
-program();.
+program p1(ola, hello);
+label 1, 2, -3;
+.

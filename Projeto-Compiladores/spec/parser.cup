@@ -15,10 +15,18 @@ parser code  {:
 terminal COMMA, SEMICOLON, DOT, LPAREN, RPAREN;
 terminal PROGRAM;
 terminal java.lang.String IDENTIFIER;
+terminal LABEL;
+terminal INTEGER_NUMBER;
 
 non terminal program;
 non terminal program_heading, block;
 non terminal identifier_list;
+non terminal declaration_part, statement_part;
+non terminal label, label_declaration_part, label_declaration_part_opt, label_declaration_part_ext;
+non terminal constant_definition_part_opt;
+non terminal type_definition_part_opt;
+non terminal variable_declaration_part_opt;
+non terminal procedure_and_function_declaration_part;
 
 start with program;
 
@@ -36,5 +44,51 @@ identifier_list ::=
 ;
 
 block ::= 
+	declaration_part statement_part {: Logger.print("Block definition");:}
+;
+
+declaration_part ::=
+	label_declaration_part_opt 
+	constant_definition_part_opt
+	type_definition_part_opt
+	variable_declaration_part_opt
+	procedure_and_function_declaration_part	{: Logger.print("Declaration part definition");:}
+;
+
+label_declaration_part_opt ::= 
+	|
+	label_declaration_part
+;
+
+label_declaration_part ::=
+	LABEL label label_declaration_part_ext SEMICOLON
+;
+
+label_declaration_part_ext ::=
+	|
+	COMMA label label_declaration_part_ext 
+;
+
+label ::=
+	INTEGER_NUMBER
+;
+
+constant_definition_part_opt  ::=
+
+;
+
+type_definition_part_opt ::=
+
+;
+
+variable_declaration_part_opt ::=
+
+;
+
+procedure_and_function_declaration_part ::=
+
+;
+
+statement_part ::=
 
 ;
