@@ -1,3 +1,9 @@
 program p1(ola, hello);
-label 1, 2, -3;
+label 1, +2, -3;
+const a1 = 1.1;
+	a2 = 'ola';
+	a3 = -1.2;
+	a4 = +2.4;
+	a5 = -a4;
+	a6 = +a5;
 .

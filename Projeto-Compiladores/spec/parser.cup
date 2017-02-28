@@ -13,19 +13,21 @@ parser code  {:
 :};
 
 terminal COMMA, SEMICOLON, DOT, LPAREN, RPAREN;
-terminal PROGRAM;
+terminal EQ;
+terminal PROGRAM, CONST, LABEL;
 terminal java.lang.String IDENTIFIER;
-terminal LABEL;
-terminal INTEGER_NUMBER;
+terminal java.lang.Number INTEGER_NUMBER;
+terminal CONSTANT;
+
 
 non terminal program;
 non terminal program_heading, block;
 non terminal identifier_list;
 non terminal declaration_part, statement_part;
 non terminal label, label_declaration_part, label_declaration_part_opt, label_declaration_part_ext;
-non terminal constant_definition_part_opt;
-non terminal type_definition_part_opt;
-non terminal variable_declaration_part_opt;
+non terminal constant_definition_part, constant_definition_part_opt, constant_definition_part_ext, constant_definition;
+non terminal type_definition_part, type_definition_part_opt;
+non terminal variable_declaration_part, variable_declaration_part_opt;
 non terminal procedure_and_function_declaration_part;
 
 start with program;
@@ -57,31 +59,55 @@ declaration_part ::=
 
 label_declaration_part_opt ::= 
 	|
-	label_declaration_part
+	label_declaration_part {: Logger.print("Label declaration part optional definition");:}
 ;
 
 label_declaration_part ::=
-	LABEL label label_declaration_part_ext SEMICOLON
+	LABEL label label_declaration_part_ext SEMICOLON {: Logger.print("Label declaration part definition");:}
 ;
 
 label_declaration_part_ext ::=
 	|
-	COMMA label label_declaration_part_ext 
+	COMMA label label_declaration_part_ext  {: Logger.print("Label declaration part extended definition");:}
 ;
 
 label ::=
-	INTEGER_NUMBER
+	INTEGER_NUMBER {: Logger.print("Label definition");:}
 ;
 
 constant_definition_part_opt  ::=
+	|
+	constant_definition_part {: Logger.print("Constant definition part optional definition");:}
+;
 
+constant_definition_part ::=
+	CONST constant_definition SEMICOLON constant_definition_part_ext {: Logger.print("Constant definition part definition");:}
+;
+
+constant_definition_part_ext ::=
+	|
+	constant_definition SEMICOLON constant_definition_part_ext {: Logger.print("Constant definition part extended definition");:}
+;
+
+constant_definition ::=
+	IDENTIFIER EQ CONSTANT
 ;
 
 type_definition_part_opt ::=
+	|
+	type_definition_part {: Logger.print("Type definition part definition");:}
+;
+
+type_definition_part ::=
 
 ;
 
 variable_declaration_part_opt ::=
+	|
+	variable_declaration_part {: Logger.print("Variable declaration part optional definition");:}
+;
+
+variable_declaration_part ::=
 
 ;
 

@@ -20,22 +20,28 @@ import compiler.core.Token;
   }
 %}
 
+/* Integer literals */
+Sign = "+" | "-"
+DecimalLiteral 	= 0 | [1-9][0-9]*
+DigitSequence 	= {Sign}? {DecimalLiteral}
+IntegerNumber 	= {DigitSequence}
+
+/* Real literals */
+Scale = "E" | "e"
+ScaleFactor = {Scale}{DigitSequence}
+RealNumber = {DigitSequence}"."{DecimalLiteral}?{ScaleFactor}? | {DigitSequence}{ScaleFactor}
+
+/* String and Character literals */
+String = "'"[^\n\r\"]+"'"
+
 /* Identifiers */
 Identifier = [:jletter:][:jletterdigit:]*
+Number = {IntegerNumber} | {RealNumber}
+Constant = {Sign}? {Identifier} | {Number} | {String}
 
 /* White spaces*/
 LineTerminator = \r|\n|\r\n
 WhiteSpace     = {LineTerminator} | [ \t\f]
-
-/* Integer literals */
-Sign = "+" | "-"
-DecimalLiteral 	= 0 | [1-9][0-9]*
-DigitSequence 	= {Sign}?{DecimalLiteral}
-IntegerNumber 	= {DigitSequence}
-
-/* Float literals */
-
-/* String and Character literals */
 
 /* Comments */
 
@@ -46,13 +52,14 @@ IntegerNumber 	= {DigitSequence}
     /* Keywords */
     "program"                      { return symbol(sym.PROGRAM); }
     "label"                      { return symbol(sym.LABEL); }
+    "const"                      { return symbol(sym.CONST); }
     
     /* Boolean literals*/
 
     /* Identifier*/
 	{Identifier} 					{ return symbol(sym.IDENTIFIER,yytext());}
-	
-	{IntegerNumber}                { return symbol(sym.INTEGER_NUMBER, new Integer(yytext())); }
+	{IntegerNumber}                 { return symbol(sym.INTEGER_NUMBER,new Integer(yytext())); }
+	{Constant}                      { return symbol(sym.CONSTANT, yytext()); }
 	
     /* Comments*/
 
@@ -64,7 +71,7 @@ IntegerNumber 	= {DigitSequence}
     ";"                             { return symbol(sym.SEMICOLON); }
 
     /* String literal */
-
+	
     /* Character literal */
 
     /* White spaces */
@@ -77,4 +84,5 @@ IntegerNumber 	= {DigitSequence}
     /* Logical Operators*/
 
     /* Assignment */
+    "="								{ return symbol(sym.EQ); }
 }
