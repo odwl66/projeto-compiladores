@@ -36,8 +36,7 @@ String = "'"[^\n\r\"]+"'"
 
 /* Identifiers */
 Identifier = [:jletter:][:jletterdigit:]*
-Number = {IntegerNumber} | {RealNumber}
-Constant = {Sign}? {Identifier} | {Number} | {String}
+/* Constant = {Sign}? {Identifier} | {Number} | {String} */
 
 /* White spaces*/
 LineTerminator = \r|\n|\r\n
@@ -58,8 +57,7 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
 
     /* Identifier*/
 	{Identifier} 					{ return symbol(sym.IDENTIFIER,yytext());}
-	{IntegerNumber}                 { return symbol(sym.INTEGER_NUMBER,new Integer(yytext())); }
-	{Constant}                      { return symbol(sym.CONSTANT, yytext()); }
+	/* {Constant}                      { return symbol(sym.CONSTANT, yytext()); } */
 	
     /* Comments*/
 
@@ -71,6 +69,11 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     ";"                             { return symbol(sym.SEMICOLON); }
 
     /* String literal */
+    {String}                        { return symbol(sym.STRING,new String(yytext())); }
+    
+    /* Number literal */
+    {IntegerNumber}                 { return symbol(sym.INTEGER_NUMBER,new Integer(yytext())); }
+    {RealNumber}                        { return symbol(sym.REAL_NUMBER,new Float(yytext())); }
 	
     /* Character literal */
 
@@ -82,6 +85,7 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     /* Operators */
      
     /* Logical Operators*/
+    {Sign}                          { return symbol(sym.SIGN); }
 
     /* Assignment */
     "="								{ return symbol(sym.EQ); }

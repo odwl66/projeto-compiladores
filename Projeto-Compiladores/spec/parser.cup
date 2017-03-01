@@ -13,22 +13,24 @@ parser code  {:
 :};
 
 terminal COMMA, SEMICOLON, DOT, LPAREN, RPAREN;
-terminal EQ;
+terminal EQ, SIGN;
 terminal PROGRAM, CONST, LABEL;
 terminal java.lang.String IDENTIFIER;
+terminal java.lang.String STRING;
 terminal java.lang.Number INTEGER_NUMBER;
-terminal CONSTANT;
-
+terminal java.lang.Number REAL_NUMBER;
 
 non terminal program;
 non terminal program_heading, block;
 non terminal identifier_list;
 non terminal declaration_part, statement_part;
 non terminal label, label_declaration_part, label_declaration_part_opt, label_declaration_part_ext;
-non terminal constant_definition_part, constant_definition_part_opt, constant_definition_part_ext, constant_definition;
+non terminal constant_definition_part, constant_definition_part_opt, constant_definition_part_ext, constant_definition, constant;
 non terminal type_definition_part, type_definition_part_opt;
 non terminal variable_declaration_part, variable_declaration_part_opt;
 non terminal procedure_and_function_declaration_part;
+non terminal sign_opt;
+non terminal number;
 
 start with program;
 
@@ -72,7 +74,7 @@ label_declaration_part_ext ::=
 ;
 
 label ::=
-	INTEGER_NUMBER {: Logger.print("Label definition");:}
+	INTEGER_NUMBER:in {: Logger.print("Label definition: " + in);:}
 ;
 
 constant_definition_part_opt  ::=
@@ -90,7 +92,23 @@ constant_definition_part_ext ::=
 ;
 
 constant_definition ::=
-	IDENTIFIER EQ CONSTANT
+	IDENTIFIER:id EQ constant:c {: Logger.print("Constant definition definition, id: " + id + " constant:" + c);:}
+;
+
+constant ::=
+	sign_opt IDENTIFIER:id {: Logger.print("Constant definition, id: " + id);:}
+	| number:n {: Logger.print("Constant definition, number: " + n);:}
+	| STRING:s {: Logger.print("Constant definition, string: " + s);:}
+;
+
+sign_opt ::=
+	SIGN
+	|
+;
+
+number ::=
+	INTEGER_NUMBER
+	| REAL_NUMBER
 ;
 
 type_definition_part_opt ::=
