@@ -50,8 +50,15 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
 
     /* Keywords */
     "program"                      { return symbol(sym.PROGRAM); }
-    "label"                      { return symbol(sym.LABEL); }
-    "const"                      { return symbol(sym.CONST); }
+    "label"                        { return symbol(sym.LABEL); }
+    "const"                        { return symbol(sym.CONST); }
+    "type"                         { return symbol(sym.TYPE); }
+    "packed"                       { return symbol(sym.PACKED); }
+    "array"                        { return symbol(sym.ARRAY); }
+    "of"                           { return symbol(sym.OF); }
+    "record"                       { return symbol(sym.RECORD); }
+    "end"                          { return symbol(sym.END); }
+    "case"                         { return symbol(sym.CASE); }
     
     /* Boolean literals*/
 
@@ -64,9 +71,13 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     /* Separators */
     "("                             { return symbol(sym.LPAREN); }
     ")"                             { return symbol(sym.RPAREN); }
+    "["                             { return symbol(sym.LBRACK); }
+    "]"                             { return symbol(sym.RBRACK); }
     "."   		  				    { return symbol(sym.DOT); }
     ","                             { return symbol(sym.COMMA); }
+    ":"                             { return symbol(sym.COLON); }
     ";"                             { return symbol(sym.SEMICOLON); }
+    ".."                            { return symbol(sym.DOT_DOT); }
 
     /* String literal */
     {String}                        { return symbol(sym.STRING,new String(yytext())); }

@@ -11,4 +11,10 @@ const a1 = 1.1;
 	e1 = 23;
 	e2 = -2;
 	e3 = +45;
+type t1 = a1 .. b1;
+	t2 = 1 .. 'ola';
+	t3 = 1.1 .. 1;
+	t4 = (a1, b1, b2); 
+	t5 = packed array [1 .. 5, (r1, r3)] of (r2);
+	t5 = array [1 .. 5, (r1, r3)] of (r2);
 .
