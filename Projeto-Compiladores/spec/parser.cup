@@ -72,8 +72,8 @@ declaration_part ::=
 ;
 
 label_declaration_part_opt ::= 
-	|
 	label_declaration_part {: Logger.print("Label declaration part optional definition");:}
+	|
 ;
 
 label_declaration_part ::=
@@ -81,8 +81,8 @@ label_declaration_part ::=
 ;
 
 label_declaration_part_ext ::=
-	|
 	COMMA label label_declaration_part_ext  {: Logger.print("Label declaration part extended definition");:}
+	|
 ;
 
 label ::=
@@ -90,8 +90,8 @@ label ::=
 ;
 
 constant_definition_part_opt  ::=
-	|
 	constant_definition_part {: Logger.print("Constant definition part optional definition");:}
+	|
 ;
 
 constant_definition_part ::=
@@ -99,8 +99,8 @@ constant_definition_part ::=
 ;
 
 constant_definition_part_ext ::=
-	|
 	constant_definition SEMICOLON constant_definition_part_ext {: Logger.print("Constant definition part extended definition");:}
+	|
 ;
 
 constant_definition ::=
@@ -114,147 +114,147 @@ constant ::=
 ;
 
 sign_opt ::=
-	SIGN
+	SIGN {: Logger.print("Sign definition");:}
 	|
 ;
 
 number ::=
-	INTEGER_NUMBER
-	| REAL_NUMBER
+	INTEGER_NUMBER {: Logger.print("Number definition");:}
+	| REAL_NUMBER {: Logger.print("Number definition");:}
 ;
 
 type_definition_part_opt ::=
+	type_definition_part {: Logger.print("Type definition part optional definition");:}
 	|
-	type_definition_part {: Logger.print("Type definition part definition");:}
 ;
 
 type_definition_part ::=
-	TYPE type_definition SEMICOLON type_definition_part_ext
+	TYPE type_definition SEMICOLON type_definition_part_ext {: Logger.print("Type definition part definition");:}
 ;
 
 type_definition_part_ext ::=
+	type_definition SEMICOLON type_definition_part_ext {: Logger.print("Type definition part extended definition");:}
 	|
-	type_definition SEMICOLON type_definition_part_ext
 ;
 
 type_definition ::=
-	IDENTIFIER EQ type
+	IDENTIFIER:id EQ type {: Logger.print("Type definition definition, id:" + id);:}
 ;
 
 type ::=
-	simple_type 
-	| structured_type 
-	| pointer_type 
-	| type_identifier
+	simple_type  {: Logger.print("Type definition");:}
+	| structured_type {: Logger.print("Type definition");:}
+	| pointer_type  {: Logger.print("Type definition");:}
+	| type_identifier {: Logger.print("Type definition");:}
 ;
 
 simple_type ::=
-	subrange_type
-	| enumerated_type
+	subrange_type {: Logger.print("Simple type definition");:}
+	| enumerated_type {: Logger.print("Simple type definition");:}
 ; 
 
 subrange_type ::=
-	lower_bound DOT_DOT upper_bound
+	lower_bound DOT_DOT upper_bound {: Logger.print("Subrange type definition");:}
 ;
 
 lower_bound ::=
-	constant
+	constant {: Logger.print("Lower bound definition");:}
 ;
 
 upper_bound ::=
-	constant
+	constant {: Logger.print("Upper bound definition");:}
 ;
 
 enumerated_type ::=
-	LPAREN identifier_list RPAREN
+	LPAREN identifier_list RPAREN {: Logger.print("Enumerated type definition");:}
 ;
 
 structured_type ::=
-	PACKED unpacked_structured_type
-	| unpacked_structured_type
+	PACKED unpacked_structured_type {: Logger.print("Structured type definition");:}
+	| unpacked_structured_type {: Logger.print("Structured type definition");:}
 ; 
 
 unpacked_structured_type ::=
-	array_type
-	| record_type
-	| set_type 
-	| file_type
+	array_type {: Logger.print("Unpacked structured type definition");:}
+	| record_type {: Logger.print("Unpacked structured type definition");:}
+	| set_type {: Logger.print("Unpacked structured type definition");:}
+	| file_type {: Logger.print("Unpacked structured type definition");:}
 ;
 
 array_type ::=
-	ARRAY LBRACK index_type index_type_ext RBRACK OF element_type
+	ARRAY LBRACK index_type index_type_ext RBRACK OF element_type {: Logger.print("Array type definition");:}
 ;
 
 index_type_ext ::=
+	COMMA index_type index_type_ext {: Logger.print("Index type extended definition");:}
 	|
-	COMMA index_type index_type_ext
 ;
 
 index_type ::=
-	simple_type
+	simple_type {: Logger.print("Index type definition");:}
 ;
 
 element_type ::=
-	type
+	type {: Logger.print("Element type definition");:}
 ;
 /*
 record_type ::=
-	RECORD field_list END
+	RECORD field_list END {: Logger.print("Record type definition");:}
 ;
 
 field_list ::=
+	fixed_part variant_part_opt SEMICOLON {: Logger.print("Field list definition");:}
+	| variant_part SEMICOLON {: Logger.print("Field list definition");:}
 	|
-	| fixed_part variant_part_opt SEMICOLON 
-	variant_part SEMICOLON
 ;
 
 fixed_part ::=
-	record_section record_section_ext
+	record_section record_section_ext {: Logger.print("Fixed part definition");:}
 ;
 
 record_section_ext ::=
+	SEMICOLON record_section record_section_ext {: Logger.print("Record section extended definition");:}
 	|
-	SEMICOLON record_section record_section_ext
 ;
 
 record_section ::=
-	identifier_list COLON type
+	identifier_list COLON type {: Logger.print("Record section definition");:}
 ;
 
 variant_part_opt ::=
+	SEMICOLON variant_part {: Logger.print("Variant part optional definition");:}
 	|
-	SEMICOLON variant_part
 ;
 
 variant_part ::=
-	CASE tag_field type_identifier OF variant variant_ext
+	CASE tag_field type_identifier OF variant variant_ext {: Logger.print("Variant part definition");:}
 ;
 
 tag_field ::=
+	IDENTIFIER COLON {: Logger.print("Tag field definition");:}
 	|
-	IDENTIFIER COLON
 ;
 
 type_identifier ::=
-	IDENTIFIER
+	IDENTIFIER:id {: Logger.print("Type identifier definition, id:" + id);:}
 ;
 
 variant_ext ::=
+	SEMICOLON variant variant_ext  {: Logger.print("Variant extended definition");:}
 	|
-	SEMICOLON variant variant_ext 
 ;
 
 variant ::= 
-	case_label_list COLON LPAREN field_list RPAREN
+	case_label_list COLON LPAREN field_list RPAREN {: Logger.print("Variant definition");:}
 ;
 
 case_label_list ::=
-	constant constant_ext
+	constant constant_ext {: Logger.print("Case label list definition");:}
 ;
 
 constant_ext ::=
-	| 
-	COMMA constant constant_ext 
+	COMMA constant constant_ext {: Logger.print("Constant extended definition");:}
+	|
 ;
 */
 set_type ::=
@@ -269,13 +269,9 @@ pointer_type ::=
 
 ; 
 
-type_identifier ::=
-
-;
-
 variable_declaration_part_opt ::=
-	|
 	variable_declaration_part {: Logger.print("Variable declaration part optional definition");:}
+	|
 ;
 
 variable_declaration_part ::=
