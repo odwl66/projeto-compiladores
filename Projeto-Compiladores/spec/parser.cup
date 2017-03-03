@@ -14,7 +14,7 @@ parser code  {:
 
 terminal COMMA, SEMICOLON, COLON, DOT, DOT_DOT, LPAREN, RPAREN, LBRACK, RBRACK, POINTER;
 terminal EQ, SIGN;
-terminal PROGRAM, CONST, LABEL, TYPE, PACKED, ARRAY, OF, RECORD, BEGIN, END, CASE, SET, FILE;
+terminal PROGRAM, CONST, LABEL, TYPE, PACKED, ARRAY, OF, RECORD, BEGIN, END, CASE, SET, FILE, VAR, PROCEDURE;
 
 terminal java.lang.String IDENTIFIER;
 terminal java.lang.String STRING;
@@ -45,9 +45,12 @@ non terminal variant, variant_ext;
 non terminal case_label_list;
 non terminal constant_ext;
 non terminal lower_bound, upper_bound;
-non terminal variable_declaration_part, variable_declaration_part_opt;
-non terminal procedure_and_function_declaration_part;
-non terminal sign_opt;
+non terminal variable_declaration_part, variable_declaration_part_opt, variable_declaration_part_ext, variable_declaration;
+non terminal procedure_and_function_declaration_part, procedure_and_function_declaration_part_opt;
+non terminal procedure_declaration, procedure_heading, procedure_body, directive, procedure_identification;
+non terminal formal_parameter_list_opt, formal_parameter_list, formal_parameter_section, formal_parameter_section_ext;
+non terminal value_parameter_section, variable_parameter_section, procedure_parameter_section, function_parameter_section;
+non terminal function_declaration;
 non terminal number;
 non terminal base_type;
 non terminal file_component_type;
@@ -82,7 +85,7 @@ declaration_part ::=
 	constant_definition_part_opt
 	type_definition_part_opt
 	variable_declaration_part_opt
-	procedure_and_function_declaration_part	{: Logger.print("Declaration part definition");:}
+	procedure_and_function_declaration_part_opt	{: Logger.print("Declaration part definition");:}
 ;
 
 label_declaration_part_opt ::= 
@@ -122,14 +125,10 @@ constant_definition ::=
 ;
 
 constant ::=
-	sign_opt IDENTIFIER:id {: Logger.print("Constant definition, id: " + id);:}
+	IDENTIFIER:id {: Logger.print("Constant definition, id: " + id);:}
+	| SIGN IDENTIFIER:id {: Logger.print("Constant definition, id: " + id);:}
 	| number:n {: Logger.print("Constant definition, number: " + n);:}
 	| STRING:s {: Logger.print("Constant definition, string: " + s);:}
-;
-
-sign_opt ::=
-	|
-	SIGN {: Logger.print("Sign definition");:}
 ;
 
 number ::=
@@ -289,7 +288,7 @@ pointer_type ::=
 ; 
 
 type_identifier ::=
-
+	IDENTIFIER {: Logger.print("Type identifier definition");:}
 ;
 
 variable_declaration_part_opt ::=
@@ -298,10 +297,89 @@ variable_declaration_part_opt ::=
 ;
 
 variable_declaration_part ::=
+	VAR variable_declaration SEMICOLON variable_declaration_part_ext {: Logger.print("Variable declaration part definition");:}
+;
 
+variable_declaration_part_ext ::=
+	|
+	variable_declaration SEMICOLON variable_declaration_part_ext {: Logger.print("Variable declaration part extended definition");:} 
+;
+
+variable_declaration ::=
+	identifier_list COLON type
+;
+
+procedure_and_function_declaration_part_opt ::=
+	| 
+	procedure_and_function_declaration_part
 ;
 
 procedure_and_function_declaration_part ::=
+	procedure_declaration SEMICOLON
+	| function_declaration SEMICOLON
+	| procedure_declaration SEMICOLON function_declaration SEMICOLON 
+;
+
+procedure_declaration ::=
+	procedure_heading SEMICOLON procedure_body 
+	| procedure_heading SEMICOLON directive 
+	| procedure_identification SEMICOLON procedure_body
+;
+
+procedure_heading ::=
+	PROCEDURE IDENTIFIER formal_parameter_list_opt 
+;
+
+formal_parameter_list_opt ::=
+	|
+	formal_parameter_list
+;
+
+formal_parameter_list ::=
+	LPAREN formal_parameter_section formal_parameter_section_ext RPAREN
+;
+
+formal_parameter_section_ext ::=
+	 |
+	 SEMICOLON formal_parameter_section formal_parameter_section_ext 
+;
+
+formal_parameter_section ::=
+	value_parameter_section 
+	| variable_parameter_section 
+	| procedure_parameter_section 
+	| function_parameter_section
+;
+
+value_parameter_section ::=
+
+;
+
+variable_parameter_section ::=
+
+; 
+
+procedure_parameter_section ::=
+
+; 
+
+function_parameter_section ::=
+
+;
+
+procedure_body ::=
+
+;
+
+directive ::=
+
+;
+
+procedure_identification ::=
+
+;
+
+function_declaration ::=
 
 ;
 

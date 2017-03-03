@@ -27,5 +27,11 @@ type t1 = a1 .. b1;
 	t13 = file of (a2, a3);
 	t14 = ^a1;
 	t15 = ^ a2;
-	begin end
+	t16 = a1;
+var a1, a2, a3, a4 : 1 .. 2;
+	b1, b2, b3, b4 : (a1, a2);
+	c1: a1;
+procedure p1;;
+begin
+end
 .

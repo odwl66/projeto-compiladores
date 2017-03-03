@@ -62,6 +62,8 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     "case"                         { return symbol(sym.CASE); }
     "set"                          { return symbol(sym.SET); }
     "file"                         { return symbol(sym.FILE); }
+    "var"                          { return symbol(sym.VAR); }
+    "procedure"                    { return symbol(sym.PROCEDURE); }
     
     /* Boolean literals*/
 

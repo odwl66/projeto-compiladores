@@ -1,0 +1,4 @@
+program p1;
+type t1 = a1 .. b1;
+	begin end
+.
