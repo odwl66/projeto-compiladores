@@ -57,6 +57,7 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     "array"                        { return symbol(sym.ARRAY); }
     "of"                           { return symbol(sym.OF); }
     "record"                       { return symbol(sym.RECORD); }
+    "begin"						   { return symbol(sym.BEGIN); }
     "end"                          { return symbol(sym.END); }
     "case"                         { return symbol(sym.CASE); }
     "set"                          { return symbol(sym.SET); }

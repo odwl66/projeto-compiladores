@@ -14,7 +14,7 @@ parser code  {:
 
 terminal COMMA, SEMICOLON, COLON, DOT, DOT_DOT, LPAREN, RPAREN, LBRACK, RBRACK;
 terminal EQ, SIGN;
-terminal PROGRAM, CONST, LABEL, TYPE, PACKED, ARRAY, OF, RECORD, END, CASE, SET, FILE;
+terminal PROGRAM, CONST, LABEL, TYPE, PACKED, ARRAY, OF, RECORD, BEGIN, END, CASE, SET, FILE;
 
 terminal java.lang.String IDENTIFIER;
 terminal java.lang.String STRING;
@@ -24,7 +24,7 @@ terminal java.lang.Number REAL_NUMBER;
 non terminal program;
 non terminal program_heading, program_heading_opt, block;
 non terminal identifier_list;
-non terminal declaration_part, statement_part;
+non terminal declaration_part, statement_part, statement_sequence;
 non terminal label, label_declaration_part, label_declaration_part_opt, label_declaration_part_ext;
 non terminal constant_definition_part, constant_definition_part_opt, constant_definition_part_ext, constant_definition, constant;
 non terminal simple_type, structured_type, pointer_type, type_identifier, type;
@@ -298,6 +298,10 @@ procedure_and_function_declaration_part ::=
 
 ;
 
-statement_part ::=
+statement_part ::= 
+	BEGIN statement_sequence END
 
+;
+
+statement_sequence ::=
 ;
