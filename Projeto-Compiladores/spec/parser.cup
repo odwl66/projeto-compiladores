@@ -24,7 +24,13 @@ terminal java.lang.Number REAL_NUMBER;
 non terminal program;
 non terminal program_heading, program_heading_opt, block;
 non terminal identifier_list;
-non terminal declaration_part, statement_part, statement_sequence;
+non terminal declaration_part, statement_part, statement_sequence, simple_statement, structured_statement;
+non terminal statement, assignment_statement, procedure_statement, goto_statement;
+non terminal while_statement, repeat_statement, for_statement, initial_expression, final_expression;
+non terminal if_statement, case_statement, case_limb;
+non terminal actual_parameter_list, actual_parameter, actual_value, actual_procedure, actual_function;
+non terminal actual_variable, record_variable, procedure_identifier, function_identifier;
+non terminal compound_statement, repetitive_statement, conditional_statement, with_statement;
 non terminal label, label_declaration_part, label_declaration_part_opt, label_declaration_part_ext;
 non terminal constant_definition_part, constant_definition_part_opt, constant_definition_part_ext, constant_definition, constant;
 non terminal simple_type, structured_type, pointer_type, type_identifier, type;
@@ -304,5 +310,111 @@ statement_part ::=
 
 ;
 
-statement_sequence ::=
+statement ::=
+
 ;
+
+statement_sequence ::=
+
+;
+
+simple_statement ::=
+
+;
+
+structured_statement ::=
+
+;
+
+assignment_statement ::=
+
+;
+
+procedure_sttatement ::=
+
+;
+
+goto_statement ::=
+
+;
+
+compound_statement ::=
+
+;
+
+repetitive_statement ::=
+
+;
+
+conditional_statement ::=
+
+;
+
+while_statement ::= 
+
+;
+
+repeat_statement ::=
+
+;
+
+for_statement ::=
+
+;
+
+initial_expression ::=
+
+;
+
+final_expression ::=
+
+;
+
+if_statement ::=
+
+;
+
+case_statement ::=
+
+;
+
+case_limb ::= 
+
+;
+
+actual_parameter_list ::= 
+
+;
+
+actual_parameter ::= 
+
+;
+
+actual_value ::= 
+
+;
+
+actual_procedure ::= 
+
+;
+
+actual_function ::= 
+
+;
+
+actual_variable ::= 
+
+;
+
+record_variable ::= 
+
+;
+
+procedure_identifier ::= 
+
+;
+
+function_identifier ::= 
+
+;
+
