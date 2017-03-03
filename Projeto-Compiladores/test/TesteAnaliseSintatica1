@@ -25,4 +25,5 @@ type t1 = a1 .. b1;
 	t11 = set of (a2, a3);
 	t12 = file of 1 .. 2;
 	t13 = file of (a2, a3);
+	t14 = ^a1;
 .

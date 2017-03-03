@@ -12,7 +12,7 @@ parser code  {:
  }
 :};
 
-terminal COMMA, SEMICOLON, COLON, DOT, DOT_DOT, LPAREN, RPAREN, LBRACK, RBRACK;
+terminal COMMA, SEMICOLON, COLON, DOT, DOT_DOT, LPAREN, RPAREN, LBRACK, RBRACK, POINTER;
 terminal EQ, SIGN;
 terminal PROGRAM, CONST, LABEL, TYPE, PACKED, ARRAY, OF, RECORD, END, CASE, SET, FILE;
 
@@ -45,6 +45,7 @@ non terminal sign_opt;
 non terminal number;
 non terminal base_type;
 non terminal file_component_type;
+
 
 start with program;
 
@@ -79,8 +80,8 @@ declaration_part ::=
 ;
 
 label_declaration_part_opt ::= 
-	label_declaration_part {: Logger.print("Label declaration part optional definition");:}
 	|
+	label_declaration_part {: Logger.print("Label declaration part optional definition");:}
 ;
 
 label_declaration_part ::=
@@ -88,8 +89,8 @@ label_declaration_part ::=
 ;
 
 label_declaration_part_ext ::=
-	COMMA label label_declaration_part_ext  {: Logger.print("Label declaration part extended definition");:}
 	|
+	COMMA label label_declaration_part_ext  {: Logger.print("Label declaration part extended definition");:}
 ;
 
 label ::=
@@ -97,8 +98,8 @@ label ::=
 ;
 
 constant_definition_part_opt  ::=
-	constant_definition_part {: Logger.print("Constant definition part optional definition");:}
 	|
+	constant_definition_part {: Logger.print("Constant definition part optional definition");:}
 ;
 
 constant_definition_part ::=
@@ -106,8 +107,8 @@ constant_definition_part ::=
 ;
 
 constant_definition_part_ext ::=
-	constant_definition SEMICOLON constant_definition_part_ext {: Logger.print("Constant definition part extended definition");:}
 	|
+	constant_definition SEMICOLON constant_definition_part_ext {: Logger.print("Constant definition part extended definition");:}
 ;
 
 constant_definition ::=
@@ -121,8 +122,8 @@ constant ::=
 ;
 
 sign_opt ::=
-	SIGN {: Logger.print("Sign definition");:}
 	|
+	SIGN {: Logger.print("Sign definition");:}
 ;
 
 number ::=
@@ -131,8 +132,8 @@ number ::=
 ;
 
 type_definition_part_opt ::=
-	type_definition_part {: Logger.print("Type definition part optional definition");:}
 	|
+	type_definition_part {: Logger.print("Type definition part optional definition");:}
 ;
 
 type_definition_part ::=
@@ -140,8 +141,8 @@ type_definition_part ::=
 ;
 
 type_definition_part_ext ::=
-	type_definition SEMICOLON type_definition_part_ext {: Logger.print("Type definition part extended definition");:}
 	|
+	type_definition SEMICOLON type_definition_part_ext {: Logger.print("Type definition part extended definition");:}
 ;
 
 type_definition ::=
@@ -193,8 +194,8 @@ array_type ::=
 ;
 
 index_type_ext ::=
-	COMMA index_type index_type_ext {: Logger.print("Index type extended definition");:}
 	|
+	COMMA index_type index_type_ext {: Logger.print("Index type extended definition");:}
 ;
 
 index_type ::=
@@ -238,14 +239,14 @@ variant_part ::=
 ;
 
 tag_field ::=
-	IDENTIFIER COLON {: Logger.print("Tag field definition");:}
 	|
+	IDENTIFIER COLON {: Logger.print("Tag field definition");:}
 ;
 
 
 variant_ext ::=
-	SEMICOLON variant variant_ext  {: Logger.print("Variant extended definition");:}
 	|
+	SEMICOLON variant variant_ext  {: Logger.print("Variant extended definition");:}
 ;
 
 variant ::= 
@@ -257,8 +258,8 @@ case_label_list ::=
 ;
 
 constant_ext ::=
-	COMMA constant constant_ext {: Logger.print("Constant extended definition");:}
 	|
+	COMMA constant constant_ext {: Logger.print("Constant extended definition");:}
 ;
 
 set_type ::=
@@ -278,7 +279,7 @@ file_component_type ::=
 ;
 
 pointer_type ::=
-
+	POINTER IDENTIFIER {: Logger.print("Pointer type definition");:}
 ; 
 
 type_identifier ::=
@@ -286,8 +287,8 @@ type_identifier ::=
 ;
 
 variable_declaration_part_opt ::=
-	variable_declaration_part {: Logger.print("Variable declaration part optional definition");:}
 	|
+	variable_declaration_part {: Logger.print("Variable declaration part optional definition");:}
 ;
 
 variable_declaration_part ::=
