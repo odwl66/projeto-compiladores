@@ -59,6 +59,8 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     "record"                       { return symbol(sym.RECORD); }
     "end"                          { return symbol(sym.END); }
     "case"                         { return symbol(sym.CASE); }
+    "set"                          { return symbol(sym.SET); }
+    "file"                         { return symbol(sym.FILE); }
     
     /* Boolean literals*/
 
