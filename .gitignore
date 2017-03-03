@@ -1,4 +1,11 @@
 .metadata
 .recommenders/
-projeto-compiladores/Projeto-Compiladores/bin/
-projeto-compiladores/Projeto-Compiladores/src/compiler/generated/
+Projeto-Compiladores/bin/compiler/generated/CUP$Parser$actions.class
+Projeto-Compiladores/bin/compiler/generated/Parser.class
+Projeto-Compiladores/bin/compiler/generated/Scanner.class
+Projeto-Compiladores/bin/compiler/generated/Scanner.java~
+Projeto-Compiladores/bin/compiler/generated/sym.class
+Projeto-Compiladores/src/compiler/generated/Parser.java
+Projeto-Compiladores/src/compiler/generated/Scanner.java
+Projeto-Compiladores/src/compiler/generated/Scanner.java~
+Projeto-Compiladores/src/compiler/generated/sym.java
