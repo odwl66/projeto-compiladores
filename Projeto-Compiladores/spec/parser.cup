@@ -27,8 +27,8 @@ non terminal identifier_list;
 non terminal declaration_part, statement_part;
 non terminal label, label_declaration_part, label_declaration_part_opt, label_declaration_part_ext;
 non terminal constant_definition_part, constant_definition_part_opt, constant_definition_part_ext, constant_definition, constant;
-non terminal type_definition_part, type_definition_part_opt, type_definition_part_ext, type_definition;
 non terminal simple_type, structured_type, pointer_type, type_identifier, type;
+non terminal type_definition_part, type_definition_part_opt, type_definition_part_ext, type_definition;
 non terminal subrange_type, enumerated_type;
 non terminal unpacked_structured_type, array_type, record_type, set_type, file_type;
 non terminal index_type, index_type_ext, element_type, field_list;
@@ -55,8 +55,8 @@ program_heading ::=
 ;
 
 identifier_list ::= 
-	IDENTIFIER   {:Logger.print("Identifier list definition");:}
-	| IDENTIFIER COMMA identifier_list {:Logger.print("Identifier list definition");:}
+	IDENTIFIER COMMA identifier_list {:Logger.print("Identifier list definition");:}
+	| IDENTIFIER:id   {:Logger.print("Identifier list definition, id: " + id);:}
 ;
 
 block ::= 
@@ -142,10 +142,10 @@ type_definition ::=
 ;
 
 type ::=
-	simple_type  {: Logger.print("Type definition");:}
-	| structured_type {: Logger.print("Type definition");:}
-	| pointer_type  {: Logger.print("Type definition");:}
-	| type_identifier {: Logger.print("Type definition");:}
+	simple_type  {: Logger.print("Type definition - simple type");:}
+	| structured_type {: Logger.print("Type definition - structured type");:}
+	| pointer_type  {: Logger.print("Type definition - pointer type");:}
+	| type_identifier {: Logger.print("Type definition - type identifier");:}
 ;
 
 simple_type ::=
@@ -197,14 +197,14 @@ index_type ::=
 element_type ::=
 	type {: Logger.print("Element type definition");:}
 ;
-/*
+
 record_type ::=
 	RECORD field_list END {: Logger.print("Record type definition");:}
 ;
 
 field_list ::=
-	fixed_part variant_part_opt SEMICOLON {: Logger.print("Field list definition");:}
-	| variant_part SEMICOLON {: Logger.print("Field list definition");:}
+	fixed_part variant_part_opt {: Logger.print("Field list definition");:}
+	| variant_part {: Logger.print("Field list definition");:}
 	|
 ;
 
@@ -213,21 +213,21 @@ fixed_part ::=
 ;
 
 record_section_ext ::=
-	SEMICOLON record_section record_section_ext {: Logger.print("Record section extended definition");:}
 	|
+	SEMICOLON record_section record_section_ext {: Logger.print("Record section extended definition");:}
 ;
 
 record_section ::=
-	identifier_list COLON type {: Logger.print("Record section definition");:}
+	identifier_list:il COLON type:t {: Logger.print("Record section definition, type: " + t + " identifier list :" + il);:}
 ;
 
 variant_part_opt ::=
-	SEMICOLON variant_part {: Logger.print("Variant part optional definition");:}
 	|
+	SEMICOLON variant_part {: Logger.print("Variant part optional definition");:}
 ;
 
 variant_part ::=
-	CASE tag_field type_identifier OF variant variant_ext {: Logger.print("Variant part definition");:}
+	CASE tag_field IDENTIFIER OF variant variant_ext {: Logger.print("Variant part definition");:}
 ;
 
 tag_field ::=
@@ -235,9 +235,6 @@ tag_field ::=
 	|
 ;
 
-type_identifier ::=
-	IDENTIFIER:id {: Logger.print("Type identifier definition, id:" + id);:}
-;
 
 variant_ext ::=
 	SEMICOLON variant variant_ext  {: Logger.print("Variant extended definition");:}
@@ -256,7 +253,7 @@ constant_ext ::=
 	COMMA constant constant_ext {: Logger.print("Constant extended definition");:}
 	|
 ;
-*/
+
 set_type ::=
 
 ; 
@@ -268,6 +265,10 @@ file_type ::=
 pointer_type ::=
 
 ; 
+
+type_identifier ::=
+
+;
 
 variable_declaration_part_opt ::=
 	variable_declaration_part {: Logger.print("Variable declaration part optional definition");:}
