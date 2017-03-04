@@ -31,7 +31,8 @@ type t1 = a1 .. b1;
 var a1, a2, a3, a4 : 1 .. 2;
 	b1, b2, b3, b4 : (a1, a2);
 	c1: a1;
-procedure p1;;
+procedure p1(a1, a2 : a1; a3, a4 : packed array [b1 .. b2 : c1] of a2);;
+
 begin
 end
 .
