@@ -52,6 +52,8 @@ non terminal procedure_and_function_declaration_part, procedure_and_function_dec
 non terminal procedure_declaration, procedure_heading, procedure_body, directive, procedure_identification;
 non terminal formal_parameter_list_opt, formal_parameter_list, formal_parameter_section, formal_parameter_section_ext;
 non terminal value_parameter_section, variable_parameter_section, procedure_parameter_section, function_parameter_section;
+non terminal parameter_type, conformant_array_schema, packed_conformant_array_schema, unpacked_conformant_array_schema;
+non terminal bound_specification, bound_specification_ext, ordinal_type_identifier;
 non terminal function_declaration;
 non terminal number;
 non terminal base_type;
@@ -354,7 +356,39 @@ formal_parameter_section ::=
 ;
 
 value_parameter_section ::=
+	identifier_list COLON parameter_type
+;
 
+parameter_type ::=
+	type_identifier 
+	| conformant_array_schema
+;
+
+conformant_array_schema ::=
+	packed_conformant_array_schema 
+	| unpacked_conformant_array_schema
+;
+
+packed_conformant_array_schema ::=
+	PACKED ARRAY LBRACK bound_specification RBRACK OF type_identifier
+; 
+
+bound_specification_ext ::=
+	|
+	SEMICOLON bound_specification bound_specification_ext 
+;
+
+bound_specification ::=
+	IDENTIFIER DOT_DOT IDENTIFIER COLON ordinal_type_identifier
+;
+
+ordinal_type_identifier ::=
+	type_identifier
+;
+
+unpacked_conformant_array_schema ::=
+	/*ARRAY LBRACK bound_specification bound_specification_ext RBRACK OF type_identifier
+	| ARRAY LBRACK bound_specification bound_specification_ext RBRACK OF conformant_array_schema*/
 ;
 
 variable_parameter_section ::=
