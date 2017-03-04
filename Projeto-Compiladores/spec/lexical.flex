@@ -66,6 +66,12 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     "procedure"                    { return symbol(sym.PROCEDURE); }
     "function"                     { return symbol(sym.FUNCTION); }
     "forward"                      { return symbol(sym.FORWARD); }
+    "goto"						   { return symbol(sym.GOTO); }
+    "while"						   { return symbol(sym.WHILE); }
+    "do"						   { return symbol(sym.DO); }
+    "for"						   { return symbol(sym.FOR); }
+    "repeat"					   { return symbol(sym.REPEAT); }
+    "until"						   { return symbol(sym.UNTIL); }
     
     /* Boolean literals*/
 
