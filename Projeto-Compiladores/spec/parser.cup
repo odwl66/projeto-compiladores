@@ -15,6 +15,7 @@ parser code  {:
 terminal COMMA, SEMICOLON, COLON, DOT, DOT_DOT, LPAREN, RPAREN, LBRACK, RBRACK, POINTER;
 terminal EQ, SIGN;
 terminal PROGRAM, CONST, LABEL, TYPE, PACKED, ARRAY, OF, RECORD, BEGIN, END, CASE, SET, FILE, VAR, PROCEDURE;
+terminal IF, ELSE, DO, WHILE, FOR, BREAK, CONTINUE, RETURN, GOTO, UNTIL, REPEAT;
 
 terminal java.lang.String IDENTIFIER;
 terminal java.lang.String STRING;
@@ -26,6 +27,7 @@ non terminal program_heading, program_heading_opt, block;
 non terminal identifier_list;
 non terminal declaration_part, statement_part, statement_sequence, simple_statement, structured_statement;
 non terminal statement, assignment_statement, procedure_statement, goto_statement;
+non terminal expression, expression_opt, expression_end_option, expression_loop;
 non terminal while_statement, repeat_statement, for_statement, initial_expression, final_expression;
 non terminal if_statement, case_statement, case_limb;
 non terminal actual_parameter_list, actual_parameter, actual_value, actual_procedure, actual_function;
@@ -388,8 +390,12 @@ statement_part ::=
 
 ;
 
-statement ::=
-
+statement ::= 
+	variable_declaration:vd {: Logger.print("Line 218 "); RESULT = vd;:}
+	| expression:e SEMICOLON {: Logger.print("Line 219 "+e);RESULT = e;:}
+	| if_statement:ist {: Logger.print("Line 221");RESULT = ist;:}
+	| while_statement:wstm {: Logger.print("Line 223");RESULT = wstm;:}
+	| for_statement {: Logger.print("Line 224");:}
 ;
 
 statement_sequence ::=
@@ -397,10 +403,17 @@ statement_sequence ::=
 ;
 
 simple_statement ::=
+	assignment_statement
+	|procedure_statement
+	|goto_statement
 
 ;
 
 structured_statement ::=
+	compound_statement 
+	|repetitive_statement 
+	|conditional_statement 
+	|with_statement
 
 ;
 
@@ -409,30 +422,39 @@ assignment_statement ::=
 ;
 
 procedure_sttatement ::=
-
+	|procedure_identifier
+	|actual_parameter_list 
 ;
 
 goto_statement ::=
+	GOTO label
 
 ;
 
 compound_statement ::=
+	BEGIN statement_sequence END
 
 ;
 
 repetitive_statement ::=
+	while_statement 
+	|repeat_statement 
+	|for_statement
 
 ;
 
 conditional_statement ::=
+	if_statement 
+	|case_statement
 
 ;
 
-while_statement ::= 
-
+while_statement ::=
+	WHILE LPAREN expression RPAREN statement {: Logger.print("While statement");:}
 ;
 
 repeat_statement ::=
+	REPEAT statement_sequence UNTIL expression
 
 ;
 
@@ -441,15 +463,21 @@ for_statement ::=
 ;
 
 initial_expression ::=
+	expression
 
 ;
 
 final_expression ::=
-
+	expression
 ;
 
 if_statement ::=
+	IF LPAREN expression:exp RPAREN statement {: Logger.print("If statement");:}
+	| IF LPAREN expression:exp RPAREN statement ELSE statement {: Logger.print("If statement");:}
 
+;
+
+expression ::=
 ;
 
 case_statement ::=
@@ -460,24 +488,31 @@ case_limb ::=
 
 ;
 
+case_limb_list ::= 
+
+;
+
 actual_parameter_list ::= 
 
 ;
 
 actual_parameter ::= 
-
+	actual_value 
+	|actual_variable 
+	|actual_procedure 
+	|actual_function
 ;
 
 actual_value ::= 
-
+	expression
 ;
 
 actual_procedure ::= 
-
+	procedure_identifier
 ;
 
 actual_function ::= 
-
+	function_identifier
 ;
 
 actual_variable ::= 
