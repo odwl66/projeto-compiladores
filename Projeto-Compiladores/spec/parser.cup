@@ -26,7 +26,7 @@ non terminal program;
 non terminal program_heading, program_heading_opt, block;
 non terminal identifier_list;
 non terminal declaration_part, statement_part, statement_sequence, simple_statement, structured_statement;
-non terminal statement, assignment_statement, procedure_statement, goto_statement;
+non terminal statement, statement_block, assignment_statement, procedure_statement, goto_statement;
 non terminal expression, expression_opt, expression_end_option, expression_loop;
 non terminal while_statement, repeat_statement, for_statement, initial_expression, final_expression;
 non terminal if_statement, case_statement, case_limb;
@@ -46,6 +46,7 @@ non terminal tag_field;
 non terminal variant, variant_ext;
 non terminal case_label_list;
 non terminal constant_ext;
+non terminal for_div_1;
 non terminal lower_bound, upper_bound;
 non terminal variable_declaration_part, variable_declaration_part_opt, variable_declaration_part_ext, variable_declaration;
 non terminal procedure_and_function_declaration_part, procedure_and_function_declaration_part_opt;
@@ -443,15 +444,17 @@ statement_part ::=
 ;
 
 statement ::= 
-	variable_declaration:vd {: Logger.print("Line 218 "); RESULT = vd;:}
-	| expression:e SEMICOLON {: Logger.print("Line 219 "+e);RESULT = e;:}
-	| if_statement:ist {: Logger.print("Line 221");RESULT = ist;:}
-	| while_statement:wstm {: Logger.print("Line 223");RESULT = wstm;:}
-	| for_statement {: Logger.print("Line 224");:}
+	variable_declaration:vd {: Logger.print("Variable declaration statement "); RESULT = vd;:}
+	| expression:e SEMICOLON {: Logger.print("Expression statement "+e);RESULT = e;:}
+	| if_statement:ist {: Logger.print("If statement statement");RESULT = ist;:}
+	| while_statement:wstm {: Logger.print("While statement statement");RESULT = wstm;:}
+	| for_statement {: Logger.print("for statement statement");:}
+
 ;
 
-statement_sequence ::=
 
+statement_sequence ::=
+	statement SEMICOLON {: Logger.print("Statement sequence"); :}
 ;
 
 simple_statement ::=
@@ -470,10 +473,10 @@ structured_statement ::=
 ;
 
 assignment_statement ::=
-
+	LPAREN variable_declaration | function_identifier RPAREN COLON EQ expression
 ;
 
-procedure_sttatement ::=
+procedure_statement ::=
 	|procedure_identifier
 	|actual_parameter_list 
 ;
@@ -510,8 +513,16 @@ repeat_statement ::=
 
 ;
 
-for_statement ::=
+for_statement ::= 
+	FOR LPAREN for_div_1 SEMICOLON expression_opt RPAREN statement {: Logger.print("Line 278");:}
+	| FOR LPAREN for_div_1 expression_opt SEMICOLON RPAREN statement {: Logger.print("Line 278");:}
+	| FOR LPAREN for_div_1 SEMICOLON RPAREN statement {: Logger.print("Line 278");:}
+	| FOR LPAREN for_div_1 expression_opt SEMICOLON expression_opt RPAREN statement_block {: Logger.print("Line 278");:}
+;
 
+for_div_1 ::= 
+	variable_declaration:vd {: Logger.print(" Line 294");RESULT=vd;:}
+	| expression:e SEMICOLON {: Logger.print(" Line 295");RESULT = e;:}
 ;
 
 initial_expression ::=
@@ -533,19 +544,21 @@ expression ::=
 ;
 
 case_statement ::=
-
+	CASE expression OF
+	case_limb { SEMICOLON case_limb } LBRACK SEMICOLON RBRACK
+	END
 ;
 
 case_limb ::= 
-
+	case_label_list COLON statement
 ;
 
-case_limb_list ::= 
-
+case_label_list ::= 
+	constant { SEMICOLON constant }
 ;
 
 actual_parameter_list ::= 
-
+	LPAREN actual_parameter { SEMICOLON actual_parameter } RPAREN
 ;
 
 actual_parameter ::= 
@@ -568,11 +581,11 @@ actual_function ::=
 ;
 
 actual_variable ::= 
-
+	variable_declaration:vd {: Logger.print("Actual variable "); RESULT = vd;:}
 ;
 
 record_variable ::= 
-
+	variable_declaration:vd {: Logger.print("Line 218 "); RESULT = vd;:}
 ;
 
 procedure_identifier ::= 
