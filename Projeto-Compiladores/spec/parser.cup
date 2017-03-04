@@ -15,7 +15,7 @@ parser code  {:
 terminal COMMA, SEMICOLON, COLON, DOT, DOT_DOT, LPAREN, RPAREN, LBRACK, RBRACK, POINTER;
 terminal EQ, SIGN;
 terminal PROGRAM, CONST, LABEL, TYPE, PACKED, ARRAY, OF, RECORD, BEGIN, END, CASE, SET, FILE, VAR, PROCEDURE, FUNCTION, FORWARD;
-terminal IF, ELSE, DO, WHILE, FOR, BREAK, CONTINUE, RETURN, GOTO, UNTIL, REPEAT;
+terminal IF, ELSE, DO, WHILE, FOR, BREAK, CONTINUE, RETURN, GOTO, UNTIL, REPEAT, TO, DOWNTO, WITH, THEN;
 
 terminal java.lang.String IDENTIFIER;
 terminal java.lang.String STRING;
@@ -48,7 +48,7 @@ non terminal case_label_list;
 non terminal constant_ext;
 non terminal for_div_1;
 non terminal lower_bound, upper_bound;
-non terminal variable_declaration_part, variable_declaration_part_opt, variable_declaration_part_ext, variable_declaration;
+non terminal variable_declaration_part, variable_declaration_part_opt, variable_declaration_part_ext, variable_declaration, variable_identifier;
 non terminal procedure_and_function_declaration_part, procedure_and_function_declaration_part_opt;
 non terminal procedure_declaration, procedure_heading, procedure_body, directive, procedure_identification;
 non terminal formal_parameter_list_opt, formal_parameter_list, formal_parameter_section, formal_parameter_section_ext;
@@ -454,13 +454,12 @@ statement ::=
 
 
 statement_sequence ::=
-	statement SEMICOLON {: Logger.print("Statement sequence"); :}
+	statement SEMICOLON statement {: Logger.print("Statement sequence"); :}
 ;
 
 simple_statement ::=
 	assignment_statement
-	|procedure_statement
-	|goto_statement
+	|LPAREN procedure_statement | goto_statement RPAREN {: Logger.print("simple statement"); :}
 
 ;
 
@@ -477,13 +476,11 @@ assignment_statement ::=
 ;
 
 procedure_statement ::=
-	|procedure_identifier
-	|actual_parameter_list 
+	procedure_identifier LBRACK actual_parameter_list RBRACK 
 ;
 
 goto_statement ::=
 	GOTO label
-
 ;
 
 compound_statement ::=
@@ -495,13 +492,6 @@ repetitive_statement ::=
 	while_statement 
 	|repeat_statement 
 	|for_statement
-
-;
-
-conditional_statement ::=
-	if_statement 
-	|case_statement
-
 ;
 
 while_statement ::=
@@ -510,37 +500,23 @@ while_statement ::=
 
 repeat_statement ::=
 	REPEAT statement_sequence UNTIL expression
-
 ;
 
 for_statement ::= 
-	FOR LPAREN for_div_1 SEMICOLON expression_opt RPAREN statement {: Logger.print("Line 278");:}
-	| FOR LPAREN for_div_1 expression_opt SEMICOLON RPAREN statement {: Logger.print("Line 278");:}
-	| FOR LPAREN for_div_1 SEMICOLON RPAREN statement {: Logger.print("Line 278");:}
-	| FOR LPAREN for_div_1 expression_opt SEMICOLON expression_opt RPAREN statement_block {: Logger.print("Line 278");:}
+	FOR variable_identifier COLON EQ initial_expression LPAREN TO | DOWNTO RPAREN final_expression DO statement
 ;
 
-for_div_1 ::= 
-	variable_declaration:vd {: Logger.print(" Line 294");RESULT=vd;:}
-	| expression:e SEMICOLON {: Logger.print(" Line 295");RESULT = e;:}
+variable_identifier ::=
+	IDENTIFIER
 ;
 
-initial_expression ::=
-	expression
-
-;
-
-final_expression ::=
-	expression
+conditional_statement ::=
+	if_statement 
+	|case_statement
 ;
 
 if_statement ::=
-	IF LPAREN expression:exp RPAREN statement {: Logger.print("If statement");:}
-	| IF LPAREN expression:exp RPAREN statement ELSE statement {: Logger.print("If statement");:}
-
-;
-
-expression ::=
+	IF LPAREN expression:exp THEN statement LBRACK statement ELSE statement RBRACK
 ;
 
 case_statement ::=
@@ -555,6 +531,10 @@ case_limb ::=
 
 case_label_list ::= 
 	constant { SEMICOLON constant }
+;
+
+with_statement ::= 
+	WITH record_variable { COMMA record_variable } DO statement
 ;
 
 actual_parameter_list ::= 
@@ -581,7 +561,20 @@ actual_function ::=
 ;
 
 actual_variable ::= 
-	variable_declaration:vd {: Logger.print("Actual variable "); RESULT = vd;:}
+	variable_declaration:vd {: Logger.print("actual variable "); RESULT = vd;:}
+;
+
+expression ::=
+;
+
+
+initial_expression ::=
+	expression
+
+;
+
+final_expression ::=
+	expression
 ;
 
 record_variable ::= 

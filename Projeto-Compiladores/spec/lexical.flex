@@ -72,6 +72,10 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     "for"						   { return symbol(sym.FOR); }
     "repeat"					   { return symbol(sym.REPEAT); }
     "until"						   { return symbol(sym.UNTIL); }
+    "to"						   { return symbol(sym.TO); }
+    "downto"					   { return symbol(sym.DOWNTO); }
+    "with"					   	   { return symbol(sym.WITH); }
+    "then"						   { return symbol(sym.THEN); }
     
     /* Boolean literals*/
 
