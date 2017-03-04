@@ -64,6 +64,8 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     "file"                         { return symbol(sym.FILE); }
     "var"                          { return symbol(sym.VAR); }
     "procedure"                    { return symbol(sym.PROCEDURE); }
+    "function"                     { return symbol(sym.FUNCTION); }
+    "forward"                      { return symbol(sym.FORWARD); }
     
     /* Boolean literals*/
 

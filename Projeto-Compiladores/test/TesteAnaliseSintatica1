@@ -31,8 +31,9 @@ type t1 = a1 .. b1;
 var a1, a2, a3, a4 : 1 .. 2;
 	b1, b2, b3, b4 : (a1, a2);
 	c1: a1;
-procedure p1(a1, a2 : a1; a3, a4 : packed array [b1 .. b2 : c1] of a2);;
-
+procedure p1(a1, a2 : a1; a3, a4 : packed array [b1 .. b2 : c1] of a2; a5, a6 : array [b3 .. b4 : c2] of a3; var a7, a8 : a1; var a3, a4 : packed array [b1 .. b2 : c1] of a2; var a5, a6 : array [b3 .. b4 : c2] of a3; procedure p2; function f1 : a2);
+const t1 = 1;
+begin end;
 begin
 end
 .

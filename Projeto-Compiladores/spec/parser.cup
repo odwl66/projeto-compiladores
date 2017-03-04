@@ -14,7 +14,7 @@ parser code  {:
 
 terminal COMMA, SEMICOLON, COLON, DOT, DOT_DOT, LPAREN, RPAREN, LBRACK, RBRACK, POINTER;
 terminal EQ, SIGN;
-terminal PROGRAM, CONST, LABEL, TYPE, PACKED, ARRAY, OF, RECORD, BEGIN, END, CASE, SET, FILE, VAR, PROCEDURE;
+terminal PROGRAM, CONST, LABEL, TYPE, PACKED, ARRAY, OF, RECORD, BEGIN, END, CASE, SET, FILE, VAR, PROCEDURE, FUNCTION, FORWARD;
 
 terminal java.lang.String IDENTIFIER;
 terminal java.lang.String STRING;
@@ -52,10 +52,11 @@ non terminal formal_parameter_list_opt, formal_parameter_list, formal_parameter_
 non terminal value_parameter_section, variable_parameter_section, procedure_parameter_section, function_parameter_section;
 non terminal parameter_type, conformant_array_schema, packed_conformant_array_schema, unpacked_conformant_array_schema;
 non terminal bound_specification, bound_specification_ext, ordinal_type_identifier;
-non terminal function_declaration;
+non terminal function_declaration, function_heading, result_type;
 non terminal number;
 non terminal base_type;
 non terminal file_component_type;
+non terminal compiler_defined_directives;
 
 
 start with program;
@@ -308,109 +309,121 @@ variable_declaration_part_ext ::=
 ;
 
 variable_declaration ::=
-	identifier_list COLON type
+	identifier_list COLON type {: Logger.print("Variable declaration definition");:}
 ;
 
 procedure_and_function_declaration_part_opt ::=
 	| 
-	procedure_and_function_declaration_part
+	procedure_and_function_declaration_part {: Logger.print("Procedure and function declaration part optional definition");:}
 ;
 
 procedure_and_function_declaration_part ::=
-	procedure_declaration SEMICOLON
-	| function_declaration SEMICOLON
-	| procedure_declaration SEMICOLON function_declaration SEMICOLON 
+	procedure_declaration SEMICOLON {: Logger.print("Procedure and function declaration part definition");:}
+	| function_declaration SEMICOLON {: Logger.print("Procedure and function declaration part definition");:}
+	| procedure_declaration SEMICOLON function_declaration SEMICOLON {: Logger.print("Procedure and function declaration part definition");:}
 ;
 
 procedure_declaration ::=
-	procedure_heading SEMICOLON procedure_body 
-	| procedure_heading SEMICOLON directive 
-	| procedure_identification SEMICOLON procedure_body
+	procedure_heading SEMICOLON procedure_body {: Logger.print("Procedure declaration definition");:} 
+	| procedure_heading SEMICOLON directive {: Logger.print("Procedure declaration definition");:}
 ;
 
 procedure_heading ::=
-	PROCEDURE IDENTIFIER formal_parameter_list_opt 
+	PROCEDURE IDENTIFIER formal_parameter_list_opt {: Logger.print("Procedure heading definition");:}
 ;
 
 formal_parameter_list_opt ::=
 	|
-	formal_parameter_list
+	formal_parameter_list {: Logger.print("Formal parameter list optional definition");:}
 ;
 
 formal_parameter_list ::=
-	LPAREN formal_parameter_section formal_parameter_section_ext RPAREN
+	LPAREN formal_parameter_section formal_parameter_section_ext RPAREN {: Logger.print("Formal parameter list definition");:}
 ;
 
 formal_parameter_section_ext ::=
 	 |
-	 SEMICOLON formal_parameter_section formal_parameter_section_ext 
+	 SEMICOLON formal_parameter_section formal_parameter_section_ext {: Logger.print("Formal parameter section extended definition");:}
 ;
 
 formal_parameter_section ::=
-	value_parameter_section 
-	| variable_parameter_section 
-	| procedure_parameter_section 
-	| function_parameter_section
+	value_parameter_section {: Logger.print("Formal parameter section definition");:} 
+	| variable_parameter_section {: Logger.print("Formal parameter section definition");:} 
+	| procedure_parameter_section {: Logger.print("Formal parameter section definition");:}
+	| function_parameter_section {: Logger.print("Formal parameter section definition");:}
 ;
 
 value_parameter_section ::=
-	identifier_list COLON parameter_type
+	identifier_list COLON parameter_type {: Logger.print("Value parameter section definition");:}
 ;
 
 parameter_type ::=
-	type_identifier 
-	| conformant_array_schema
+	type_identifier {: Logger.print("Parameter type definition");:}
+	| conformant_array_schema {: Logger.print("Parameter type definition");:}
 ;
 
 conformant_array_schema ::=
-	packed_conformant_array_schema 
-	| unpacked_conformant_array_schema
+	packed_conformant_array_schema {: Logger.print("Conformant array schema definition");:}
+	| unpacked_conformant_array_schema {: Logger.print("Conformant array schema definition");:}
 ;
 
 packed_conformant_array_schema ::=
-	PACKED ARRAY LBRACK bound_specification RBRACK OF type_identifier
+	PACKED ARRAY LBRACK bound_specification RBRACK OF type_identifier {: Logger.print("Packed conformant array schema definition");:}
 ; 
 
 bound_specification_ext ::=
 	|
-	SEMICOLON bound_specification bound_specification_ext 
+	SEMICOLON bound_specification bound_specification_ext {: Logger.print("Bound specification extended definition");:} 
 ;
 
 bound_specification ::=
-	IDENTIFIER DOT_DOT IDENTIFIER COLON ordinal_type_identifier
+	IDENTIFIER DOT_DOT IDENTIFIER COLON ordinal_type_identifier {: Logger.print("Bound specification definition");:}
 ;
 
 ordinal_type_identifier ::=
-	type_identifier
+	type_identifier {: Logger.print("Ordinal type identifier definition");:}
 ;
 
 unpacked_conformant_array_schema ::=
-	/*ARRAY LBRACK bound_specification bound_specification_ext RBRACK OF type_identifier
-	| ARRAY LBRACK bound_specification bound_specification_ext RBRACK OF conformant_array_schema*/
+	ARRAY LBRACK bound_specification bound_specification_ext RBRACK OF type_identifier {: Logger.print("Unpacked conformant array schema definition");:}
+	| ARRAY LBRACK bound_specification bound_specification_ext RBRACK OF conformant_array_schema {: Logger.print("Unpacked conformant array schema definition");:}
 ;
 
 variable_parameter_section ::=
-
+	VAR identifier_list COLON parameter_type {: Logger.print("Variable parameter section definition");:}
 ; 
 
 procedure_parameter_section ::=
-
+	procedure_heading {: Logger.print("Procedure parameter section definition");:}
 ; 
 
 function_parameter_section ::=
+	function_heading {: Logger.print("Function parameter section definition");:}
+;
 
+function_heading ::=
+	FUNCTION IDENTIFIER formal_parameter_list_opt COLON result_type {: Logger.print("Function heading definition");:}
+;
+
+result_type ::=
+	type_identifier {: Logger.print("Result type definition");:}
 ;
 
 procedure_body ::=
-
+	block {: Logger.print("Procedure body definition");:}
 ;
 
 directive ::=
+	FORWARD {: Logger.print("Directive definition");:}
+	| compiler_defined_directives {: Logger.print("Directive definition");:}
+;
+
+compiler_defined_directives ::=
 
 ;
 
 procedure_identification ::=
-
+	PROCEDURE procedure_identifier {: Logger.print("Procedure identification definition");:}
 ;
 
 function_declaration ::=
@@ -523,7 +536,7 @@ record_variable ::=
 ;
 
 procedure_identifier ::= 
-
+	IDENTIFIER
 ;
 
 function_identifier ::= 
