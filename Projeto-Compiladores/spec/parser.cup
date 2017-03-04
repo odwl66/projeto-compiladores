@@ -54,7 +54,7 @@ non terminal formal_parameter_list_opt, formal_parameter_list, formal_parameter_
 non terminal value_parameter_section, variable_parameter_section, procedure_parameter_section, function_parameter_section;
 non terminal parameter_type, conformant_array_schema, packed_conformant_array_schema, unpacked_conformant_array_schema;
 non terminal bound_specification, bound_specification_ext, ordinal_type_identifier;
-non terminal function_declaration, function_heading, result_type;
+non terminal function_declaration, function_heading, function_body, result_type;
 non terminal number;
 non terminal base_type;
 non terminal file_component_type;
@@ -429,7 +429,12 @@ procedure_identification ::=
 ;
 
 function_declaration ::=
+	function_heading SEMICOLON function_body 
+	| function_heading SEMICOLON directive
+;
 
+function_body ::=
+	block
 ;
 
 statement_part ::= 

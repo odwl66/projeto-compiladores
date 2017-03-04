@@ -1,4 +1,4 @@
 program p1;
-procedure p1(function f1 : );;
-	begin end
+begin
+end
 .
