@@ -76,6 +76,7 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     "downto"					   { return symbol(sym.DOWNTO); }
     "with"					   	   { return symbol(sym.WITH); }
     "then"						   { return symbol(sym.THEN); }
+    "assignment"				   { return symbol(sym.ASSIGNMENT); }
     
     /* Boolean literals*/
 

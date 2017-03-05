@@ -13,7 +13,7 @@ parser code  {:
 :};
 
 terminal COMMA, SEMICOLON, COLON, DOT, DOT_DOT, LPAREN, RPAREN, LBRACK, RBRACK, POINTER;
-terminal EQ, SIGN;
+terminal EQ, SIGN, ASSIGNMENT;
 terminal PROGRAM, CONST, LABEL, TYPE, PACKED, ARRAY, OF, RECORD, BEGIN, END, CASE, SET, FILE, VAR, PROCEDURE, FUNCTION, FORWARD;
 terminal IF, ELSE, DO, WHILE, FOR, BREAK, CONTINUE, RETURN, GOTO, UNTIL, REPEAT, TO, DOWNTO, WITH, THEN;
 
@@ -25,15 +25,15 @@ terminal java.lang.Number REAL_NUMBER;
 non terminal program;
 non terminal program_heading, program_heading_opt, block;
 non terminal identifier_list;
-non terminal declaration_part, statement_part, statement_sequence, simple_statement, structured_statement;
-non terminal statement, statement_block, assignment_statement, procedure_statement, goto_statement;
+non terminal declaration_part, statement_part, statement_sequence, simple_statement, structured_statement, simple_statement_aux;
+non terminal statement, statement_block, assignment_statement, procedure_statement, goto_statement, aux_statement_sequence, statement_aux;
 non terminal expression, expression_opt, expression_end_option, expression_loop;
 non terminal while_statement, repeat_statement, for_statement, initial_expression, final_expression;
 non terminal if_statement, case_statement, case_limb;
 non terminal actual_parameter_list, actual_parameter, actual_value, actual_procedure, actual_function;
 non terminal actual_variable, record_variable, procedure_identifier, function_identifier;
 non terminal compound_statement, repetitive_statement, conditional_statement, with_statement;
-non terminal label, label_declaration_part, label_declaration_part_opt, label_declaration_part_ext;
+non terminal label, label_declaration_part, label_declaration_part_opt, label_declaration_part_ext, optional_label;
 non terminal constant_definition_part, constant_definition_part_opt, constant_definition_part_ext, constant_definition, constant;
 non terminal simple_type, structured_type, pointer_type, type_identifier, type;
 non terminal type_definition_part, type_definition_part_opt, type_definition_part_ext, type_definition;
@@ -48,7 +48,7 @@ non terminal case_label_list;
 non terminal constant_ext;
 non terminal for_div_1;
 non terminal lower_bound, upper_bound;
-non terminal variable_declaration_part, variable_declaration_part_opt, variable_declaration_part_ext, variable_declaration, variable_identifier;
+non terminal variable_declaration_part, variable_declaration_part_opt, variable_declaration_part_ext, variable_declaration, variable_identifier, variable;
 non terminal procedure_and_function_declaration_part, procedure_and_function_declaration_part_opt;
 non terminal procedure_declaration, procedure_heading, procedure_body, directive, procedure_identification;
 non terminal formal_parameter_list_opt, formal_parameter_list, formal_parameter_section, formal_parameter_section_ext;
@@ -439,88 +439,118 @@ function_body ::=
 ;
 
 statement_part ::= 
-	BEGIN statement_sequence END
+	BEGIN statement_sequence END {:Logger.print("Statement Part");:} 
 
 ;
 
-statement ::= 
-	variable_declaration:vd {: Logger.print("Variable declaration statement "); RESULT = vd;:}
-	| expression:e SEMICOLON {: Logger.print("Expression statement "+e);RESULT = e;:}
-	| if_statement:ist {: Logger.print("If statement statement");RESULT = ist;:}
-	| while_statement:wstm {: Logger.print("While statement statement");RESULT = wstm;:}
-	| for_statement {: Logger.print("for statement statement");:}
-
+statement ::=
+  {:Logger.print("Statement - line 1");:} optional_label statement_aux
 ;
 
+statement_aux ::=
+  {:Logger.print("Statement Aux - line 1");:} simple_statement |
+  {:Logger.print("Statement Aux - line 2");:} structured_statement
+;
 
 statement_sequence ::=
-	statement SEMICOLON statement {: Logger.print("Statement sequence"); :}
+  statement aux_statement_sequence {:Logger.print("Statement sequence");:}
+;
+
+aux_statement_sequence ::=
+  {:Logger.print("Aux statement sequence - Vazio -> ");:} |
+  {:Logger.print("Aux statement sequence - line 2 -> statement ; aux_statement_sequence");:}  SEMICOLON statement aux_statement_sequence
+;
+
+optional_label ::=
+  {:Logger.print("Optional Label - Vazio");:} |
+  {:Logger.print("Optional Label - line 2");:} label COLON
 ;
 
 simple_statement ::=
-	assignment_statement
-	|LPAREN procedure_statement | goto_statement RPAREN {: Logger.print("simple statement"); :}
-
+  {:Logger.print("Simple Statement - Vazio");:} |
+  {:Logger.print("Simple Statement - line 2");:} variable simple_statement_aux |
+  {:Logger.print("Simple Statement - line 3");:} goto_statement
 ;
 
-structured_statement ::=
-	compound_statement 
-	|repetitive_statement 
-	|conditional_statement 
-	|with_statement
+simple_statement_aux ::=
+  {:Logger.print("Simple Statement Aux - procedure");:} procedure_statement |
+  {:Logger.print("Simple Statement Aux - assignment");:} assignment_statement
+;
 
+variable ::=
+;
+
+simple_statement_aux ::=
+  {:Logger.print("Simple Statement Aux - procedure");:} procedure_statement |
+  {:Logger.print("Simple Statement Aux - assignment");:} assignment_statement
 ;
 
 assignment_statement ::=
-	LPAREN variable_declaration | function_identifier RPAREN COLON EQ expression
+  {:Logger.print("Assignment Statement");:} ASSIGNMENT expression
+;
+
+structured_statement ::=
+  {:Logger.print("Structured statement - line 1");:} compound_statement |
+  {:Logger.print("Structured statement - line 2");:} repetitive_statement |
+  {:Logger.print("Structured statement - line 3");:} conditional_statement |
+  {:Logger.print("Structured statement - line 4");:} with_statement
 ;
 
 procedure_statement ::=
-	procedure_identifier LBRACK actual_parameter_list RBRACK 
+  {:Logger.print("Procedure statement");:} actual_parameter_list
 ;
 
 goto_statement ::=
-	GOTO label
+  {:Logger.print("Go to statement");:} GOTO label
 ;
 
 compound_statement ::=
-	BEGIN statement_sequence END
-
+  {:Logger.print("Compound statement");:} BEGIN statement_sequence END
 ;
 
 repetitive_statement ::=
-	while_statement 
-	|repeat_statement 
-	|for_statement
-;
-
-while_statement ::=
-	WHILE LPAREN expression RPAREN statement {: Logger.print("While statement");:}
-;
-
-repeat_statement ::=
-	REPEAT statement_sequence UNTIL expression
-;
-
-for_statement ::= 
-	FOR variable_identifier COLON EQ initial_expression LPAREN TO | DOWNTO RPAREN final_expression DO statement
-;
-
-variable_identifier ::=
-	IDENTIFIER
+  {:Logger.print("Repetitive Statement - line 1");:} while_statement |
+  {:Logger.print("Repetitive Statement - line 2");:} repeat_statement |
+  {:Logger.print("Repetitive Statement - line 3");:} for_statement
 ;
 
 conditional_statement ::=
-	if_statement 
-	|case_statement
+	{:Logger.print("Conditional Statement - line 1");:} if_statement |
+	{:Logger.print("Conditional Statement - line 2");:} case_statement
 ;
 
+while_statement ::=
+  {:Logger.print("While statement Part");:} WHILE expression DO statement
+;
+
+repeat_statement ::=
+  {:Logger.print("Repeat statement");:} REPEAT statement_sequence UNTIL expression
+;
+
+for_statement ::=
+  {:Logger.print("For Statement - line 1");:} FOR variable_identifier ASSIGNMENT initial_expression TO final_expression DO statement |
+  {:Logger.print("For Statement - line 2");:} FOR variable_identifier ASSIGNMENT initial_expression DOWNTO final_expression DO statement
+;
+
+initial_expression ::=
+	expression
+
+;
+
+final_expression ::=
+	expression
+;
+
+expression ::=
+;
+
+
 if_statement ::=
-	IF LPAREN expression:exp THEN statement LBRACK statement ELSE statement RBRACK
+	{:Logger.print("If Statement");:} IF LPAREN expression:exp THEN statement LBRACK statement ELSE statement RBRACK
 ;
 
 case_statement ::=
-	CASE expression OF
+	{:Logger.print("Case Statement");:} CASE expression OF
 	case_limb { SEMICOLON case_limb } LBRACK SEMICOLON RBRACK
 	END
 ;
@@ -531,10 +561,6 @@ case_limb ::=
 
 case_label_list ::= 
 	constant { SEMICOLON constant }
-;
-
-with_statement ::= 
-	WITH record_variable { COMMA record_variable } DO statement
 ;
 
 actual_parameter_list ::= 
@@ -564,18 +590,6 @@ actual_variable ::=
 	variable_declaration:vd {: Logger.print("actual variable "); RESULT = vd;:}
 ;
 
-expression ::=
-;
-
-
-initial_expression ::=
-	expression
-
-;
-
-final_expression ::=
-	expression
-;
 
 record_variable ::= 
 	variable_declaration:vd {: Logger.print("Line 218 "); RESULT = vd;:}
