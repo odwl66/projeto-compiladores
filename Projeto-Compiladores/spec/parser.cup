@@ -60,7 +60,10 @@ non terminal number;
 non terminal base_type;
 non terminal file_component_type;
 non terminal compiler_defined_directives;
-
+non terminal entire_variable, component_variable, referenced_variable;
+non terminal field_identifier;
+non terminal indexed_variable, field_designator, file_buffer;
+non terminal array_variable, expression_list, expression_ext;
 
 start with program;
 
@@ -478,11 +481,62 @@ simple_statement_aux ::=
 ;
 
 variable ::=
+	entire_variable 
+	| component_variable 
+	| referenced_variable
+;
+
+entire_variable ::=
+	variable_identifier 
+	| field_identifier
+;
+
+variable_identifier ::=
+	IDENTIFIER
+; 
+
+field_identifier ::=
+	IDENTIFIER
+;
+
+component_variable ::= 
+	indexed_variable 
+	| field_designator
+	| file_buffer
+;
+
+indexed_variable ::=
+	array_variable LBRACK expression_list RBRACK
+;
+
+array_variable ::=
+	variable
+;
+
+expression_list ::=
+	expression expression_ext
+;
+
+expression_ext ::=
+	|
+	COMMA expression expression_ext
+;
+
+field_designator ::=
+
+;
+
+file_buffer ::=
+
+;
+ 
+referenced_variable ::=
+
 ;
 
 simple_statement_aux ::=
-  {:Logger.print("Simple Statement Aux - procedure");:} procedure_statement |
   {:Logger.print("Simple Statement Aux - assignment");:} assignment_statement
+  {:Logger.print("Simple Statement Aux - procedure");:} procedure_statement |
 ;
 
 assignment_statement ::=
@@ -547,6 +601,7 @@ final_expression ::=
 ;
 
 expression ::=
+	
 ;
 
 

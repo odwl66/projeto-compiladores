@@ -76,7 +76,6 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     "downto"					   { return symbol(sym.DOWNTO); }
     "with"					   	   { return symbol(sym.WITH); }
     "then"						   { return symbol(sym.THEN); }
-    "assignment"				   { return symbol(sym.ASSIGNMENT); }
     
     /* Boolean literals*/
 
@@ -97,6 +96,7 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     ";"                             { return symbol(sym.SEMICOLON); }
     ".."                            { return symbol(sym.DOT_DOT); }
     "^"                             { return symbol(sym.POINTER); }
+    
 
     /* String literal */
     {String}                        { return symbol(sym.STRING,new String(yytext())); }
@@ -119,4 +119,5 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
 
     /* Assignment */
     "="								{ return symbol(sym.EQ); }
+    ":="                            { return symbol(sym.ASSIGNMENT); }
 }
