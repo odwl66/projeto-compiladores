@@ -25,7 +25,7 @@ terminal java.lang.Number REAL_NUMBER;
 non terminal program;
 non terminal program_heading, program_heading_opt, block;
 non terminal identifier_list;
-non terminal declaration_part, statement_part, statement_sequence, simple_statement, structured_statement, simple_statement_aux;
+non terminal declaration_part, statement_part, statement_sequence, simple_statement, structured_statement, simple_statement_aux, assignment_statement_aux;
 non terminal statement, statement_block, assignment_statement, procedure_statement, goto_statement, aux_statement_sequence, statement_aux;
 non terminal expression, expression_opt, expression_end_option, expression_loop;
 non terminal while_statement, repeat_statement, for_statement, initial_expression, final_expression;
@@ -486,8 +486,13 @@ simple_statement_aux ::=
 ;
 
 assignment_statement ::=
-  {:Logger.print("Assignment Statement");:} ASSIGNMENT expression
+  {:Logger.print("Assignment Statement");:} assignment_statement_aux ASSIGNMENT expression
 ;
+
+assignment_statement_aux ::= 
+	{:Logger.print("Assignment Statement Aux - Line 1");:} variable | 
+	{:Logger.print("Assignment Statement Aux - Line 2");:} function_identifier
+;	
 
 structured_statement ::=
   {:Logger.print("Structured statement - line 1");:} compound_statement |
