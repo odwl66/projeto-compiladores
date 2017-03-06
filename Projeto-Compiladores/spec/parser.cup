@@ -65,6 +65,7 @@ non terminal field_identifier;
 non terminal indexed_variable, field_designator, file_buffer;
 non terminal array_variable, expression_list, expression_ext;
 non terminal file_variable;
+non terminal pointer_variable;
 
 start with program;
 
@@ -536,7 +537,11 @@ file_variable ::=
 ;
  
 referenced_variable ::=
+	pointer_variable POINTER
+;
 
+pointer_variable ::=
+	variable
 ;
 
 simple_statement_aux ::=
