@@ -12,10 +12,22 @@ import java.io.IOException;
 public class MainTest {
 	
 	public static void main(String[] args) throws IOException {
-		String filePath = "test/TesteAnaliseSintatica3";
+		String filePath1 = "test/TesteAnaliseSintatica1";
+		String filePath2 = "test/TesteAnaliseSintatica2";
+		String filePath3 = "test/TesteAnaliseSintatica3";
 		Scanner scanner = null;
 		try {
-			scanner = new Scanner(new BufferedReader(new FileReader(filePath)));
+			scanner = new Scanner(new BufferedReader(new FileReader(filePath1)));
+		} catch (FileNotFoundException e) {
+			System.out.println(e.getMessage());
+		}
+		try {
+			scanner = new Scanner(new BufferedReader(new FileReader(filePath2)));
+		} catch (FileNotFoundException e) {
+			System.out.println(e.getMessage());
+		}
+		try {
+			scanner = new Scanner(new BufferedReader(new FileReader(filePath3)));
 		} catch (FileNotFoundException e) {
 			System.out.println(e.getMessage());
 		}
