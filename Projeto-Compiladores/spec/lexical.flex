@@ -80,6 +80,8 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     "div"						   { return symbol(sym.DIV); }
     "mod"						   { return symbol(sym.MOD); }
     "and"						   { return symbol(sym.AND); }
+    "nil"						   { return symbol(sym.NIL); }
+    "not"						   { return symbol(sym.NOT); }
     
     /* Boolean literals*/
 
