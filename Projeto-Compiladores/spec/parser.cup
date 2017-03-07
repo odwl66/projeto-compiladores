@@ -614,10 +614,11 @@ final_expression ::=
 
 
 expression ::=
-	{:Logger.print("Simple expression - line 1");:} simple_expression | relational_operator simple_expression
+	{:Logger.print("Expression - line 1");:} simple_expression | relational_operator simple_expression
 ;
 
 simple_expression ::=
+	{:Logger.print("Simple expression - line 1");:} SIGN term | addition_operator term
 ;
 
 relational_operator ::=
