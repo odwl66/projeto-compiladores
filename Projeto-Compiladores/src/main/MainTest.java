@@ -15,6 +15,8 @@ public class MainTest {
 		String filePath1 = "test/TesteAnaliseSintatica1";
 		String filePath2 = "test/TesteAnaliseSintatica2";
 		String filePath3 = "test/TesteAnaliseSintatica3";
+		String filePath4 = "test/TesteAnaliseSintatica4";
+
 		Scanner scanner = null;
 		try {
 			scanner = new Scanner(new BufferedReader(new FileReader(filePath1)));
@@ -28,6 +30,11 @@ public class MainTest {
 		}
 		try {
 			scanner = new Scanner(new BufferedReader(new FileReader(filePath3)));
+		} catch (FileNotFoundException e) {
+			System.out.println(e.getMessage());
+		}
+		try {
+			scanner = new Scanner(new BufferedReader(new FileReader(filePath4)));
 		} catch (FileNotFoundException e) {
 			System.out.println(e.getMessage());
 		}
