@@ -67,12 +67,13 @@ non terminal indexed_variable, field_designator, file_buffer;
 non terminal array_variable, expression_list, expression_ext, simple_expression, relational_operator, addition_operator, multiplication_operator;
 non terminal file_variable;
 non terminal pointer_variable, multiplication_operator_ext;
-non terminal bound_identifier, term, factor, set, sign_opt, function_designator;
+non terminal bound_identifier, term, factor, set, function_designator;
 non terminal else_opt;
 non terminal semicolon_opt;
 non terminal addition_operator_term_ext;
 non terminal element_list;
 non terminal relational_operator_opt;
+non terminal sign;
 
 start with program;
 
@@ -143,10 +144,15 @@ constant_definition ::=
 ;
 
 constant ::=
-	IDENTIFIER:id {: Logger.print("Constant definition, id: " + id);:}
-	| SIGN IDENTIFIER:id {: Logger.print("Constant definition, id: " + id);:}
-	| number:n {: Logger.print("Constant definition, number: " + n);:}
-	| STRING:s {: Logger.print("Constant definition, string: " + s);:}
+	IDENTIFIER:id {: Logger.print("Constant definition, id: " + id);:}	|
+	sign IDENTIFIER:id {: Logger.print("Constant definition, id: " + id);:}	|
+	number:n {: Logger.print("Constant definition, number: " + n);:} |
+	STRING:s {: Logger.print("Constant definition, string: " + s);:}
+;
+
+sign ::=
+	PLUS |
+	LESS
 ;
 
 number ::=
@@ -612,7 +618,8 @@ relational_operator_opt ::=
 ;
 
 simple_expression ::=
-	{:Logger.print("Simple expression - line 1");:} sign_opt term addition_operator_term_ext
+	{:Logger.print("Simple expression - line 1");:} term addition_operator_term_ext |
+	{:Logger.print("Simple expression - line 1");:} sign term addition_operator_term_ext
 ;
 
 addition_operator_term_ext ::=
@@ -645,11 +652,6 @@ addition_operator ::=
 
 multiplication_operator ::= 
 	{:Logger.print("Multiplication operator");:} MULT | DIVI | DIV | MOD | AND
-;
-
-sign_opt ::= 
-	{:Logger.print("Sign opt - vazio");:} | 
-	{:Logger.print("Sign opt - line 2");:} SIGN 
 ;
 
 set ::=

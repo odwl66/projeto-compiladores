@@ -17,31 +17,40 @@ public class MainTest {
 		String filePath3 = "test/TesteAnaliseSintatica3";
 		String filePath4 = "test/TesteAnaliseSintatica4";
 
-		Scanner scanner = null;
+		Scanner scanner1 = null,
+				scanner2 = null,
+				scanner3 = null,
+				scanner4 = null;
 		try {
-			scanner = new Scanner(new BufferedReader(new FileReader(filePath1)));
+			scanner1 = new Scanner(new BufferedReader(new FileReader(filePath1)));
 		} catch (FileNotFoundException e) {
 			System.out.println(e.getMessage());
 		}
 		try {
-			scanner = new Scanner(new BufferedReader(new FileReader(filePath2)));
+			scanner2 = new Scanner(new BufferedReader(new FileReader(filePath2)));
 		} catch (FileNotFoundException e) {
 			System.out.println(e.getMessage());
 		}
 		try {
-			scanner = new Scanner(new BufferedReader(new FileReader(filePath3)));
+			scanner3 = new Scanner(new BufferedReader(new FileReader(filePath3)));
 		} catch (FileNotFoundException e) {
 			System.out.println(e.getMessage());
 		}
 		try {
-			scanner = new Scanner(new BufferedReader(new FileReader(filePath4)));
+			scanner4 = new Scanner(new BufferedReader(new FileReader(filePath4)));
 		} catch (FileNotFoundException e) {
 			System.out.println(e.getMessage());
 		}
-		Parser parser = new Parser(scanner);
+		Parser parser1 = new Parser(scanner1);
+		Parser parser2 = new Parser(scanner2);
+		Parser parser3 = new Parser(scanner3);
+		Parser parser4 = new Parser(scanner4);
 		Symbol s = null;
 		try {
-			s = parser.parse();
+			s = parser1.parse();
+			s = parser2.parse();
+			s = parser3.parse();
+			s = parser4.parse();
 			System.out.println("The compilation process was successfully finished!");
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
