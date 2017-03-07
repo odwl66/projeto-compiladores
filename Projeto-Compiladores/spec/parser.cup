@@ -65,6 +65,9 @@ non terminal entire_variable, component_variable, referenced_variable;
 non terminal field_identifier;
 non terminal indexed_variable, field_designator, file_buffer;
 non terminal array_variable, expression_list, expression_ext, simple_expression, relational_operator, addition_operator, multiplication_operator;
+non terminal file_variable;
+non terminal pointer_variable;
+
 
 start with program;
 
@@ -524,15 +527,23 @@ expression_ext ::=
 ;
 
 field_designator ::=
-
+	record_variable DOT field_identifier
 ;
 
 file_buffer ::=
+	file_variable POINTER
+;
 
+file_variable ::=
+	variable
 ;
  
 referenced_variable ::=
+	pointer_variable POINTER
+;
 
+pointer_variable ::=
+	variable
 ;
 
 simple_statement_aux ::=
@@ -675,7 +686,7 @@ actual_variable ::=
 
 
 record_variable ::= 
-	variable_declaration:vd {: Logger.print("Line 218 "); RESULT = vd;:}
+	variable:v {: Logger.print("Line 218 "); RESULT = v;:}
 ;
 
 procedure_identifier ::= 
