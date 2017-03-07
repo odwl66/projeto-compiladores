@@ -72,6 +72,7 @@ non terminal else_opt;
 non terminal semicolon_opt;
 non terminal addition_operator_term_ext;
 non terminal element_list;
+non terminal relational_operator_opt;
 
 start with program;
 
@@ -602,7 +603,11 @@ final_expression ::=
 
 
 expression ::=
-	{:Logger.print("Expression - line 1");:} simple_expression |
+	{:Logger.print("Expression - line 1");:} simple_expression relational_operator_opt
+;
+
+relational_operator_opt ::=
+	{:Logger.print("Expression - vazio");:} |
 	{:Logger.print("Expression - line 2");:} relational_operator simple_expression
 ;
 
