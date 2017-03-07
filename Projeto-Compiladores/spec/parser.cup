@@ -13,7 +13,7 @@ parser code  {:
 :};
 
 terminal COMMA, SEMICOLON, COLON, DOT, DOT_DOT, LPAREN, RPAREN, LBRACK, RBRACK, POINTER, NIL, NOT;
-terminal EQ, SIGN, ASSIGNMENT, DIF, LESST, LESSEQ, GREAT, GREATEQ, IN, MORE, LESS, MULT, DIVI; 
+terminal EQ, SIGN, ASSIGNMENT, DIF, LESST, LESSEQ, GREAT, GREATEQ, IN, PLUS, LESS, MULT, DIVI; 
 terminal PROGRAM, CONST, LABEL, TYPE, PACKED, ARRAY, OF, RECORD, BEGIN, END, CASE, SET, FILE, VAR, PROCEDURE, FUNCTION, FORWARD;
 terminal OR, DIV, MOD, AND;
 terminal IF, ELSE, DO, WHILE, FOR, BREAK, CONTINUE, RETURN, GOTO, UNTIL, REPEAT, TO, DOWNTO, WITH, THEN;
@@ -640,7 +640,7 @@ factor ::=
 ;
 
 addition_operator ::=
-	{:Logger.print("Addition operator");:} MORE | LESS | OR
+	{:Logger.print("Addition operator");:} PLUS | LESS | OR
 ;
 
 multiplication_operator ::= 

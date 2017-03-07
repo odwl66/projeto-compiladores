@@ -118,7 +118,7 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     {WhiteSpace}				    { /*just ignore it*/ }
 
     /* Arithmetical operators*/
-    "+"  							{ return symbol(sym.MORE); }
+    "+"  							{ return symbol(sym.PLUS); }
     "-" 							{ return symbol(sym.LESS); }
     "*"								{ return symbol(sym.MULT); }
     "/"								{ return symbol(sym.DIVI); }
