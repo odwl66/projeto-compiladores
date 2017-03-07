@@ -328,7 +328,7 @@ variable_declaration ::=
 ;
 
 procedure_and_function_declaration_part_opt ::=
-	| 
+	{: Logger.print("Procedure and function declaration part optional vazio");:} | 
 	procedure_and_function_declaration_part {: Logger.print("Procedure and function declaration part optional definition");:}
 ;
 
