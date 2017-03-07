@@ -25,12 +25,12 @@ terminal java.lang.Number REAL_NUMBER;
 non terminal program;
 non terminal program_heading, program_heading_opt, block;
 non terminal identifier_list;
-non terminal declaration_part, statement_part, statement_sequence, simple_statement, structured_statement, simple_statement_aux, assignment_statement_aux;
+non terminal declaration_part, statement_part, statement_sequence, simple_statement, structured_statement;
 non terminal statement, statement_block, assignment_statement, procedure_statement, goto_statement, aux_statement_sequence, statement_aux;
 non terminal expression, expression_opt, expression_end_option, expression_loop;
 non terminal while_statement, repeat_statement, for_statement, initial_expression, final_expression;
 non terminal if_statement, case_statement, case_limb;
-non terminal actual_parameter_list, actual_parameter, actual_value, actual_procedure, actual_function;
+non terminal actual_parameter_list, actual_parameter, actual_value, actual_procedure, actual_function, actual_parameter_ext;
 non terminal actual_variable, record_variable, procedure_identifier, function_identifier;
 non terminal compound_statement, repetitive_statement, conditional_statement, with_statement;
 non terminal label, label_declaration_part, label_declaration_part_opt, label_declaration_part_ext, optional_label;
@@ -449,12 +449,8 @@ statement_part ::=
 ;
 
 statement ::=
-  {:Logger.print("Statement - line 1");:} optional_label statement_aux
-;
-
-statement_aux ::=
-  {:Logger.print("Statement Aux - line 1");:} simple_statement |
-  {:Logger.print("Statement Aux - line 2");:} structured_statement
+  {:Logger.print("Statement - line 1");:} optional_label simple_statement |
+  {:Logger.print("Statement - line 2");:} optional_label structured_statement
 ;
 
 statement_sequence ::=
@@ -473,90 +469,77 @@ optional_label ::=
 
 simple_statement ::=
   {:Logger.print("Simple Statement - Vazio");:} |
-  {:Logger.print("Simple Statement - line 2");:} variable simple_statement_aux |
-  {:Logger.print("Simple Statement - line 3");:} goto_statement
-;
-
-simple_statement_aux ::=
-  {:Logger.print("Simple Statement Aux - procedure");:} procedure_statement |
-  {:Logger.print("Simple Statement Aux - assignment");:} assignment_statement
+  {:Logger.print("Simple Statement - line 2");:} assignment_statement |
+  {:Logger.print("Simple Statement - line 3");:} procedure_statement |
+  {:Logger.print("Simple Statement - line 4");:} goto_statement
 ;
 
 variable ::=
-	entire_variable 
-	| component_variable 
-	| referenced_variable
+	{:Logger.print("Variable - entire variable");:} entire_variable  |
+	{:Logger.print("Variable - component variable");:} component_variable |
+	{:Logger.print("Variable - referenced variable");:} referenced_variable
 ;
 
 entire_variable ::=
-	variable_identifier 
-	| field_identifier
+	{:Logger.print("entire variable - variable identifier");:} variable_identifier |
+	{:Logger.print("entire variable - field identifier");:} field_identifier 
 ;
 
 variable_identifier ::=
-	IDENTIFIER
+	{:Logger.print("variable identifier");:} IDENTIFIER 
 ; 
 
 field_identifier ::=
-	IDENTIFIER
+	{:Logger.print("field identifier");:} IDENTIFIER 
 ;
 
 component_variable ::= 
-	indexed_variable 
-	| field_designator
-	| file_buffer
+	{:Logger.print("component variable - indexed variable");:} indexed_variable |
+	{:Logger.print("component variable - field designator");:} field_designator |
+	{:Logger.print("component variable - file buffer");:} file_buffer 
 ;
 
 indexed_variable ::=
-	array_variable LBRACK expression_list RBRACK
+	{:Logger.print("indexed variable");:} array_variable LBRACK expression_list RBRACK 
 ;
 
 array_variable ::=
-	variable
+	{:Logger.print("array variable");:} variable 
 ;
 
 expression_list ::=
-	expression expression_ext
+	{:Logger.print("Expression list");:} expression expression_ext 
 ;
 
 expression_ext ::=
-	|
-	COMMA expression expression_ext
+	{:Logger.print("expression ext - vazio");:} |
+	{:Logger.print("expression ext - line 2");:} COMMA expression expression_ext 
 ;
 
 field_designator ::=
-	record_variable DOT field_identifier
+	{:Logger.print("field designator");:} record_variable DOT field_identifier 
 ;
 
 file_buffer ::=
-	file_variable POINTER
+	{:Logger.print("file buffer");:} file_variable POINTER 
 ;
 
 file_variable ::=
-	variable
+	{:Logger.print("file variable");:} variable 
 ;
  
 referenced_variable ::=
-	pointer_variable POINTER
+	{:Logger.print("referenced variable");:} pointer_variable POINTER 
 ;
 
 pointer_variable ::=
-	variable
-;
-
-simple_statement_aux ::=
-  {:Logger.print("Simple Statement Aux - assignment");:} assignment_statement
-  {:Logger.print("Simple Statement Aux - procedure");:} procedure_statement |
+	{:Logger.print("pointer variable");:} variable 
 ;
 
 assignment_statement ::=
-  {:Logger.print("Assignment Statement");:} assignment_statement_aux ASSIGNMENT expression
+  {:Logger.print("Assignment Statement - line 1");:} variable ASSIGNMENT expression |
+  {:Logger.print("Assignment Statement - line 2");:} function_identifier ASSIGNMENT expression 
 ;
-
-assignment_statement_aux ::= 
-	{:Logger.print("Assignment Statement Aux - Line 1");:} variable | 
-	{:Logger.print("Assignment Statement Aux - Line 2");:} function_identifier
-;	
 
 structured_statement ::=
   {:Logger.print("Structured statement - line 1");:} compound_statement |
@@ -566,7 +549,8 @@ structured_statement ::=
 ;
 
 procedure_statement ::=
-  {:Logger.print("Procedure statement");:} actual_parameter_list
+  {:Logger.print("Procedure statement - line 2");:} procedure_identifier |
+  {:Logger.print("Procedure statement - line 1");:} procedure_identifier actual_parameter_list
 ;
 
 goto_statement ::=
@@ -634,42 +618,47 @@ case_label_list ::=
 ;
 
 actual_parameter_list ::= 
-	LPAREN actual_parameter { SEMICOLON actual_parameter } RPAREN
+	{:Logger.print("Actual parameter list");:} LPAREN actual_parameter actual_parameter_ext RPAREN
+; 
+
+actual_parameter_ext ::=
+	{:Logger.print("actual parameter ext - vazio");:} | 
+	{:Logger.print("actual parameter ext - line 2");:} COMMA actual_parameter actual_parameter_ext
 ;
 
 actual_parameter ::= 
-	actual_value 
-	|actual_variable 
-	|actual_procedure 
-	|actual_function
+	{:Logger.print("actual parameter - actual value");:} actual_value |
+	{:Logger.print("actual parameter - actual variable");:} actual_variable |
+	{:Logger.print("actual parameter - actual procedure");:} actual_procedure |
+	{:Logger.print("actual parameter - actual function");:} actual_function 
 ;
 
 actual_value ::= 
-	expression
+	{:Logger.print("actual value");:} expression 
 ;
 
 actual_procedure ::= 
-	procedure_identifier
+	{:Logger.print("actual procedure");:} procedure_identifier 
 ;
 
 actual_function ::= 
-	function_identifier
+	{:Logger.print("actual function");:} function_identifier 
 ;
 
 actual_variable ::= 
-	variable_declaration:vd {: Logger.print("actual variable "); RESULT = vd;:}
+	{: Logger.print("actual variable ");:} variable:v 
 ;
 
 
 record_variable ::= 
-	variable:v {: Logger.print("Line 218 "); RESULT = v;:}
+	{: Logger.print("record variable");:} variable:v 
 ;
 
 procedure_identifier ::= 
-	IDENTIFIER
+	{:Logger.print("procedure identifier");:} IDENTIFIER 
 ;
 
 function_identifier ::= 
-
+	{:Logger.print("function identifier");:} IDENTIFIER 
 ;
 
