@@ -30,9 +30,9 @@ non terminal declaration_part, statement_part, statement_sequence, simple_statem
 non terminal statement, statement_block, assignment_statement, procedure_statement, goto_statement, aux_statement_sequence, statement_aux;
 non terminal expression, expression_opt, expression_end_option, expression_loop;
 non terminal while_statement, repeat_statement, for_statement, initial_expression, final_expression;
-non terminal if_statement, case_statement, case_limb;
+non terminal if_statement, case_statement, case_limb, case_limb_ext;
 non terminal actual_parameter_list, actual_parameter, actual_value, actual_procedure, actual_function, actual_parameter_ext;
-non terminal actual_variable, record_variable, procedure_identifier, function_identifier;
+non terminal actual_variable, record_variable, record_variable_ext, procedure_identifier, function_identifier;
 non terminal compound_statement, repetitive_statement, conditional_statement, with_statement;
 non terminal label, label_declaration_part, label_declaration_part_opt, label_declaration_part_ext, optional_label;
 non terminal constant_definition_part, constant_definition_part_opt, constant_definition_part_ext, constant_definition, constant, constant_identifier;
@@ -45,7 +45,7 @@ non terminal fixed_part, variant_part_opt, variant_part;
 non terminal record_section, record_section_ext;
 non terminal tag_field;
 non terminal variant, variant_ext;
-non terminal case_label_list;
+non terminal case_label_list, case_label_list_ext;
 non terminal constant_ext;
 non terminal for_div_1;
 non terminal lower_bound, upper_bound;
@@ -68,6 +68,8 @@ non terminal array_variable, expression_list, expression_ext, simple_expression,
 non terminal file_variable;
 non terminal pointer_variable, multiplication_operator_ext;
 non terminal bound_identifier, term, factor, set, sign_opt, function_designator;
+non terminal else_opt;
+non terminal semicolon_opt;
 
 
 start with program;
@@ -639,21 +641,50 @@ set ::=
 ;
 
 if_statement ::=
-	{:Logger.print("If Statement");:} IF LPAREN expression:exp THEN statement LBRACK statement ELSE statement RBRACK
+	{:Logger.print("If Statement");:} IF expression:exp THEN statement else_opt
+;
+
+else_opt ::=
+	{:Logger.print("Else opt - vazio");:} | 
+	{:Logger.print("Else opt - else");:} ELSE statement
 ;
 
 case_statement ::=
 	{:Logger.print("Case Statement");:} CASE expression OF
-	case_limb { SEMICOLON case_limb } LBRACK SEMICOLON RBRACK
+	case_limb case_limb_ext semicolon_opt
 	END
 ;
 
+semicolon_opt ::=
+	{:Logger.print("semicolon opt - vazio");:} | 
+	{:Logger.print("semicolon opt - semicolon");:} SEMICOLON
+;
+
 case_limb ::= 
-	case_label_list COLON statement
+	{:Logger.print("Case limb");:} case_label_list COLON statement
+;
+
+case_limb_ext ::=
+	{:Logger.print("Case limb ext - vazio");:} |
+	{:Logger.print("Case limb ext - line 2");:} SEMICOLON case_limb case_limb_ext 
 ;
 
 case_label_list ::= 
-	constant { SEMICOLON constant }
+	{:Logger.print("Case label list");:} constant case_label_list_ext
+;
+
+case_label_list_ext ::=
+	{:Logger.print("Case label list ext - vazio");:} |
+	{:Logger.print("Case label list ext - line 2");:} SEMICOLON constant case_label_list_ext
+;
+
+with_statement ::=
+	WITH record_variable record_variable_ext DO statement
+;
+
+record_variable_ext ::=
+	|
+	COMMA record_variable record_variable_ext 
 ;
 
 actual_parameter_list ::= 
