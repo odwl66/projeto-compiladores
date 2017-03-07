@@ -616,7 +616,7 @@ addition_operator_term_ext ::=
 ;
 
 relational_operator ::=
-	EQ | DIF | LESS | LESSEQ | GREAT | GREATEQ | IN 
+	{:Logger.print("relational operator");:} EQ | DIF | LESS | LESSEQ | GREAT | GREATEQ | IN 
 ;
 
 
@@ -625,34 +625,35 @@ term ::=
 ;
 
 multiplication_operator_ext ::= 
-    | multiplication_operator factor multiplication_operator_ext
+    {:Logger.print("Multiplication operator ext - vazio");:} |
+    {:Logger.print("Multiplication operator ext - line 2");:} multiplication_operator factor multiplication_operator_ext
 ;
 
 
 factor ::=
-	variable | number | STRING | set | NIL | constant_identifier | bound_identifier | function_designator | LPAREN expression RPAREN | NOT factor
+	{:Logger.print("Factor");:} variable | number | STRING | set | NIL | constant_identifier | bound_identifier | function_designator | LPAREN expression RPAREN | NOT factor
 ;
 
 addition_operator ::=
-	MORE | LESS | OR
+	{:Logger.print("Addition operator");:} MORE | LESS | OR
 ;
 
 multiplication_operator ::= 
-	MORE | DIVI | DIV | MOD | AND
+	{:Logger.print("Multiplication operator");:} MULT | DIVI | DIV | MOD | AND
 ;
 
 sign_opt ::= 
-	| 
-	SIGN 
+	{:Logger.print("Sign opt - vazio");:} | 
+	{:Logger.print("Sign opt - line 2");:} SIGN 
 ;
 
 set ::=
-	LBRACK element_list RBRACK
+	{:Logger.print("Set");:} LBRACK element_list RBRACK
 ;
 
 element_list ::=
-	|
-	expression expression_ext
+	{:Logger.print("Element list - vazio");:} |
+	{:Logger.print("Element list - line 2");:} expression expression_ext
 ;
 
 if_statement ::=
