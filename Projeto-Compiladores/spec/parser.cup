@@ -70,7 +70,8 @@ non terminal pointer_variable, multiplication_operator_ext;
 non terminal bound_identifier, term, factor, set, sign_opt, function_designator;
 non terminal else_opt;
 non terminal semicolon_opt;
-
+non terminal addition_operator_term_ext;
+non terminal element_list;
 
 start with program;
 
@@ -601,11 +602,17 @@ final_expression ::=
 
 
 expression ::=
-	{:Logger.print("Expression - line 1");:} simple_expression | relational_operator simple_expression
+	{:Logger.print("Expression - line 1");:} simple_expression |
+	{:Logger.print("Expression - line 2");:} relational_operator simple_expression
 ;
 
 simple_expression ::=
-	{:Logger.print("Simple expression - line 1");:} sign_opt term | addition_operator term
+	{:Logger.print("Simple expression - line 1");:} sign_opt term addition_operator_term_ext
+;
+
+addition_operator_term_ext ::=
+	{:Logger.print("Adition operator term ext - vazio");:} |
+	{:Logger.print("Adition operator term ext - line 2");:} addition_operator term addition_operator_term_ext
 ;
 
 relational_operator ::=
@@ -614,7 +621,7 @@ relational_operator ::=
 
 
 term ::=
-	{:Logger.print("Term - line 1");:} factor | multiplication_operator_ext factor
+	{:Logger.print("Term - line 1");:} factor multiplication_operator_ext
 ;
 
 multiplication_operator_ext ::= 
@@ -635,9 +642,17 @@ multiplication_operator ::=
 ;
 
 sign_opt ::= 
-	| SIGN 
+	| 
+	SIGN 
 ;
+
 set ::=
+	LBRACK element_list RBRACK
+;
+
+element_list ::=
+	|
+	expression expression_ext
 ;
 
 if_statement ::=
