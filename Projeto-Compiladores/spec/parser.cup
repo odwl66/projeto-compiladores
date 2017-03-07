@@ -13,8 +13,9 @@ parser code  {:
 :};
 
 terminal COMMA, SEMICOLON, COLON, DOT, DOT_DOT, LPAREN, RPAREN, LBRACK, RBRACK, POINTER;
-terminal EQ, SIGN, ASSIGNMENT;
+terminal EQ, SIGN, ASSIGNMENT, DIF, LESST, LESSEQ, GREAT, GREATEQ, IN, MORE, LESS, MULT, DIVI; 
 terminal PROGRAM, CONST, LABEL, TYPE, PACKED, ARRAY, OF, RECORD, BEGIN, END, CASE, SET, FILE, VAR, PROCEDURE, FUNCTION, FORWARD;
+terminal OR, DIV, MOD, AND;
 terminal IF, ELSE, DO, WHILE, FOR, BREAK, CONTINUE, RETURN, GOTO, UNTIL, REPEAT, TO, DOWNTO, WITH, THEN;
 
 terminal java.lang.String IDENTIFIER;
@@ -63,7 +64,7 @@ non terminal compiler_defined_directives;
 non terminal entire_variable, component_variable, referenced_variable;
 non terminal field_identifier;
 non terminal indexed_variable, field_designator, file_buffer;
-non terminal array_variable, expression_list, expression_ext;
+non terminal array_variable, expression_list, expression_ext, simple_expression, relational_operator, addition_operator, multiplication_operator;
 
 start with program;
 
@@ -600,10 +601,32 @@ final_expression ::=
 	expression
 ;
 
+
 expression ::=
+	{:Logger.print("Simple expression - line 1");:} simple_expression | relational_operator simple_expression
+;
+
+simple_expression ::=
+;
+
+relational_operator ::=
+	EQ | DIF | LESS | LESSEQ | GREAT | GREATEQ | IN 
+;
+
+term ::=
 	
 ;
 
+factor ::=
+;
+
+addition_operator ::=
+	MORE | LESS | OR
+;
+
+multiplication_operator ::= 
+	MORE | DIVI | DIV | MOD | AND
+;
 
 if_statement ::=
 	{:Logger.print("If Statement");:} IF LPAREN expression:exp THEN statement LBRACK statement ELSE statement RBRACK

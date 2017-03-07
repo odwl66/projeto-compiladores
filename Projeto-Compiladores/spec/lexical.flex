@@ -76,12 +76,16 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     "downto"					   { return symbol(sym.DOWNTO); }
     "with"					   	   { return symbol(sym.WITH); }
     "then"						   { return symbol(sym.THEN); }
+    "or"						   { return symbol(sym.OR); }
+    "div"						   { return symbol(sym.DIV); }
+    "mod"						   { return symbol(sym.MOD); }
+    "and"						   { return symbol(sym.AND); }
     
     /* Boolean literals*/
 
     /* Identifier*/
 	{Identifier} 					{ return symbol(sym.IDENTIFIER,yytext());}
-	/* {Constant}                      { return symbol(sym.CONSTANT, yytext()); } */
+	/* {Constant}                     { return symbol(sym.CONSTANT, yytext()); } */
 	
     /* Comments*/
 
@@ -111,11 +115,24 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     {WhiteSpace}				    { /*just ignore it*/ }
 
     /* Arithmetical operators*/
+    "+"  							{ return symbol(sym.MORE); }
+    "-" 							{ return symbol(sym.LESS); }
+    "*"								{ return symbol(sym.MULT); }
+    "/"								{ return symbol(sym.DIVI); }
     
     /* Operators */
      
     /* Logical Operators*/
     {Sign}                          { return symbol(sym.SIGN); }
+    
+    /* Relational Operators*/	
+    "<>" 							{ return symbol(sym.DIF); }
+    "<" 							{ return symbol(sym.LESST); }
+    "<="							{ return symbol(sym.LESSEQ); }
+    ">" 							{ return symbol(sym.GREAT); }
+    ">=" 							{ return symbol(sym.GREATEQ); }
+    "in"							{ return symbol(sym.IN); }
+    
 
     /* Assignment */
     "="								{ return symbol(sym.EQ); }
