@@ -12,9 +12,10 @@ parser code  {:
  }
 :};
 
-terminal COMMA, SEMICOLON, COLON, DOT, DOT_DOT, LPAREN, RPAREN, LBRACK, RBRACK, POINTER;
-terminal EQ, SIGN, ASSIGNMENT;
+terminal COMMA, SEMICOLON, COLON, DOT, DOT_DOT, LPAREN, RPAREN, LBRACK, RBRACK, POINTER, NIL, NOT;
+terminal EQ, SIGN, ASSIGNMENT, DIF, LESST, LESSEQ, GREAT, GREATEQ, IN, MORE, LESS, MULT, DIVI; 
 terminal PROGRAM, CONST, LABEL, TYPE, PACKED, ARRAY, OF, RECORD, BEGIN, END, CASE, SET, FILE, VAR, PROCEDURE, FUNCTION, FORWARD;
+terminal OR, DIV, MOD, AND;
 terminal IF, ELSE, DO, WHILE, FOR, BREAK, CONTINUE, RETURN, GOTO, UNTIL, REPEAT, TO, DOWNTO, WITH, THEN;
 
 terminal java.lang.String IDENTIFIER;
@@ -34,7 +35,7 @@ non terminal actual_parameter_list, actual_parameter, actual_value, actual_proce
 non terminal actual_variable, record_variable, procedure_identifier, function_identifier;
 non terminal compound_statement, repetitive_statement, conditional_statement, with_statement;
 non terminal label, label_declaration_part, label_declaration_part_opt, label_declaration_part_ext, optional_label;
-non terminal constant_definition_part, constant_definition_part_opt, constant_definition_part_ext, constant_definition, constant;
+non terminal constant_definition_part, constant_definition_part_opt, constant_definition_part_ext, constant_definition, constant, constant_identifier;
 non terminal simple_type, structured_type, pointer_type, type_identifier, type;
 non terminal type_definition_part, type_definition_part_opt, type_definition_part_ext, type_definition;
 non terminal subrange_type, enumerated_type;
@@ -63,9 +64,11 @@ non terminal compiler_defined_directives;
 non terminal entire_variable, component_variable, referenced_variable;
 non terminal field_identifier;
 non terminal indexed_variable, field_designator, file_buffer;
-non terminal array_variable, expression_list, expression_ext;
+non terminal array_variable, expression_list, expression_ext, simple_expression, relational_operator, addition_operator, multiplication_operator;
 non terminal file_variable;
-non terminal pointer_variable;
+non terminal pointer_variable, multiplication_operator_ext;
+non terminal bound_identifier, term, factor, set, sign_opt, function_designator;
+
 
 start with program;
 
@@ -594,10 +597,46 @@ final_expression ::=
 	expression
 ;
 
+
 expression ::=
-	
+	{:Logger.print("Expression - line 1");:} simple_expression | relational_operator simple_expression
 ;
 
+simple_expression ::=
+	{:Logger.print("Simple expression - line 1");:} sign_opt term | addition_operator term
+;
+
+relational_operator ::=
+	EQ | DIF | LESS | LESSEQ | GREAT | GREATEQ | IN 
+;
+
+
+term ::=
+	{:Logger.print("Term - line 1");:} factor | multiplication_operator_ext factor
+;
+
+multiplication_operator_ext ::= 
+    | multiplication_operator factor multiplication_operator_ext
+;
+
+
+factor ::=
+	variable | number | STRING | set | NIL | constant_identifier | bound_identifier | function_designator | LPAREN expression RPAREN | NOT factor
+;
+
+addition_operator ::=
+	MORE | LESS | OR
+;
+
+multiplication_operator ::= 
+	MORE | DIVI | DIV | MOD | AND
+;
+
+sign_opt ::= 
+	| SIGN 
+;
+set ::=
+;
 
 if_statement ::=
 	{:Logger.print("If Statement");:} IF LPAREN expression:exp THEN statement LBRACK statement ELSE statement RBRACK
@@ -654,11 +693,32 @@ record_variable ::=
 	{: Logger.print("record variable");:} variable:v 
 ;
 
+function_designator ::=
+	function_identifier | actual_parameter_list
+;
+
+variable_identifier ::=
+	IDENTIFIER
+; 
+
+field_identifier ::=
+	IDENTIFIER
+;
+
 procedure_identifier ::= 
 	{:Logger.print("procedure identifier");:} IDENTIFIER 
 ;
 
 function_identifier ::= 
-	{:Logger.print("function identifier");:} IDENTIFIER 
+	{:Logger.print("function identifier");:} IDENTIFIER
 ;
+ 
+constant_identifier ::=
+ 	IDENTIFIER
+;
+
+bound_identifier ::=
+	IDENTIFIER
+;
+
 
