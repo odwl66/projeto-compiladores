@@ -657,7 +657,7 @@ element_list ::=
 ;
 
 if_statement ::=
-	{:Logger.print("If Statement");:} IF expression:exp THEN statement else_opt
+	{:Logger.print("If Statement");:} IF expression THEN statement else_opt
 ;
 
 else_opt ::=

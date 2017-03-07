@@ -1,4 +1,22 @@
 program p1;
-begin
+const
+PI = 3.141592654;
+
+var W, X, Y, Z, number, sum: Integer;
+
+begin 
+1:	X := 10;
+2:	Y := 2;
+3: goto 2;
+
+case X of
+	1: Y := 3;
+end;
+
+for W := 10  to 20 do
+   begin
+      X := 2;
+   end;
+
 end
 .
