@@ -210,4 +210,36 @@ public class SemanticImpl {
 			throw new Exception(exceptionMessage);
 		}
 	}
+
+	private Operation getOperator(String op) {
+		switch (op) {
+		case "=":
+			return Operation.EQ;
+		case "+":
+			return Operation.PLUS;
+		case "-":
+			return Operation.LESS;
+		case "*":
+			return Operation.MULT;
+		case "/":
+			return Operation.DIVI;
+		case "<>":
+			return Operation.DIF;
+		case ">=":
+			return Operation.GREATEQ;
+		case "<=":
+			return Operation.LESSEQ;
+		case ">":
+			return Operation.GREAT;
+		case "<":
+			return Operation.LESST;
+		case ":=":
+			return Operation.ASSIGNMENT;
+		case "in":
+			return Operation.IN;
+		
+		default:
+			return Operation.PLUS;
+		}
+	}
 }
