@@ -82,6 +82,7 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     "and"						   { return symbol(sym.AND); }
     "nil"						   { return symbol(sym.NIL); }
     "not"						   { return symbol(sym.NOT); }
+    "if"						   { return symbol(sym.IF); }
     
     /* Boolean literals*/
 
