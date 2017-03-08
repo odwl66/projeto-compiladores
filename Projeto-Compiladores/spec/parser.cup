@@ -1,4 +1,6 @@
 import compiler.util.*;
+import compiler.core.*;
+import compiler.analysis.*;
 
 parser code  {:
  public void report_error(String message, Object info){
@@ -175,7 +177,7 @@ type_definition_part_ext ::=
 ;
 
 type_definition ::=
-	IDENTIFIER:id EQ type {: Logger.print("Type definition definition, id:" + id);:}
+	IDENTIFIER:id EQ type {:Logger.print("Type definition definition, id:" + id); Type t = new Type(id); SemanticImpl.getInstance().addType(t);:}
 ;
 
 type ::=

@@ -29,6 +29,10 @@ public class SemanticImpl {
 		return singleton;
 	}
 	
+	public static void destroy() {
+		singleton = null;
+	}
+	
 	private static void initCollections() {
 		initBasicTypes();
 		initTypeCompatibility();
@@ -240,6 +244,17 @@ public class SemanticImpl {
 		
 		default:
 			return Operation.PLUS;
+		}
+	}
+	
+	public void addType(Type type) throws Exception{
+		if (!secondaryTypes.contains(type)) {
+			secondaryTypes.add(type);
+			List<String> tipos = new ArrayList<String>();
+			tipos.add(type.getName());
+			tiposCompativeis.put(type.getName(), tipos);
+		} else {
+			throw new Exception("Error: Type already exists!");
 		}
 	}
 }

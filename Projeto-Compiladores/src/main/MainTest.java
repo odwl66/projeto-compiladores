@@ -3,6 +3,7 @@ package main;
 import compiler.generated.Parser;
 import compiler.generated.Scanner;
 import java_cup.runtime.Symbol;
+import compiler.analysis.SemanticImpl;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -48,9 +49,13 @@ public class MainTest {
 		Symbol s = null;
 		try {
 			s = parser1.parse();
+			SemanticImpl.getInstance().destroy();
 			s = parser2.parse();
+			SemanticImpl.getInstance().destroy();
 			s = parser3.parse();
+			SemanticImpl.getInstance().destroy();
 			s = parser4.parse();
+			SemanticImpl.getInstance().destroy();
 			System.out.println("The compilation process was successfully finished!");
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
