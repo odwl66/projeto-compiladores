@@ -76,6 +76,7 @@ non terminal addition_operator_term_ext;
 non terminal element_list;
 non terminal relational_operator_opt;
 non terminal sign;
+non terminal identifier_list_var_decl;
 
 start with program;
 
@@ -177,19 +178,19 @@ type_definition_part_ext ::=
 ;
 
 type_definition ::=
-	IDENTIFIER:id EQ type {:Logger.print("Type definition definition, id:" + id); Type t = new Type(id); SemanticImpl.getInstance().addType(t);:}
+	IDENTIFIER:id EQ type:tp {:Logger.print("Type definition definition, id:" + id); SemanticImpl.getInstance().checkTypeExists(((Type)tp)); Type t = new Type(id); SemanticImpl.getInstance().addType(t);:}
 ;
 
 type ::=
-	simple_type  {: Logger.print("Type definition - simple type");:}
-	| structured_type {: Logger.print("Type definition - structured type");:}
-	| pointer_type  {: Logger.print("Type definition - pointer type");:}
-	| type_identifier {: Logger.print("Type definition - type identifier");:}
+	simple_type:st  {: Logger.print("Type definition - simple type"); RESULT = st;:}
+	| structured_type:st {: Logger.print("Type definition - structured type"); RESULT = st;:}
+	| pointer_type:pt  {: Logger.print("Type definition - pointer type"); RESULT = pt;:}
+	| type_identifier:ti {: Logger.print("Type definition - type identifier"); RESULT = ti;:}
 ;
 
 simple_type ::=
-	subrange_type {: Logger.print("Simple type definition");:}
-	| enumerated_type {: Logger.print("Simple type definition");:}
+	subrange_type:st {: Logger.print("Simple type definition"); RESULT = new Type("subrange");:}
+	| enumerated_type {: Logger.print("Simple type definition"); RESULT = new Type("enumerated");:}
 ; 
 
 subrange_type ::=
@@ -209,15 +210,15 @@ enumerated_type ::=
 ;
 
 structured_type ::=
-	PACKED unpacked_structured_type {: Logger.print("Structured type definition");:}
-	| unpacked_structured_type {: Logger.print("Structured type definition");:}
+	PACKED unpacked_structured_type:ust {: Logger.print("Structured type definition");  RESULT = ust;:}
+	| unpacked_structured_type:ust {: Logger.print("Structured type definition"); RESULT = ust;:}
 ; 
 
 unpacked_structured_type ::=
-	array_type {: Logger.print("Unpacked structured type definition");:}
-	| record_type {: Logger.print("Unpacked structured type definition");:}
-	| set_type {: Logger.print("Unpacked structured type definition");:}
-	| file_type {: Logger.print("Unpacked structured type definition");:}
+	array_type {: Logger.print("Unpacked structured type definition"); RESULT = new Type("array");:}
+	| record_type {: Logger.print("Unpacked structured type definition");  RESULT = new Type("record");:}
+	| set_type {: Logger.print("Unpacked structured type definition");  RESULT = new Type("set");:}
+	| file_type {: Logger.print("Unpacked structured type definition");  RESULT = new Type("file");:}
 ;
 
 array_type ::=
@@ -310,11 +311,11 @@ file_component_type ::=
 ;
 
 pointer_type ::=
-	POINTER IDENTIFIER {: Logger.print("Pointer type definition");:}
+	POINTER IDENTIFIER:id {: Logger.print("Pointer type definition");  RESULT = new Type(id);:}
 ; 
 
 type_identifier ::=
-	IDENTIFIER {: Logger.print("Type identifier definition");:}
+	IDENTIFIER:id {: Logger.print("Type identifier definition"); RESULT = new Type(id);:}
 ;
 
 variable_declaration_part_opt ::=
@@ -332,7 +333,12 @@ variable_declaration_part_ext ::=
 ;
 
 variable_declaration ::=
-	identifier_list COLON type {: Logger.print("Variable declaration definition");:}
+	identifier_list_var_decl COLON type:t {:Logger.print("Variable declaration definition, type: " + t); SemanticImpl.getInstance().addVariablesFromTempList((Type) t);:}
+;
+
+identifier_list_var_decl ::=
+	IDENTIFIER:id COMMA identifier_list {:Logger.print("Identifier list definition"); SemanticImpl.getInstance().addVariableToTempList(new Variable((String) id, new Type("null")));:}
+	| IDENTIFIER:id   {:Logger.print("Identifier list definition, id: " + id); SemanticImpl.getInstance().addVariableToTempList(new Variable((String) id, new Type("null")));:}
 ;
 
 procedure_and_function_declaration_part_opt ::=

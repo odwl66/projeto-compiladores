@@ -91,6 +91,7 @@ public class SemanticImpl {
 	}
 	
 	private void addVariable(Variable variable) throws Exception {
+		System.out.println("Variable: " + variable.toString());
 		if (scopeStack.isEmpty()) {
 			validateVariableGlobal(variable);
 
@@ -173,14 +174,18 @@ public class SemanticImpl {
 		}
 	}
 	
-	public Variable findVariableByIdentifier(String variableName) {
+	public Variable findVariableByIdentifier(String variableName) throws Exception {
+		Variable var;
 		if (!scopeStack.isEmpty()
 				&& getCurrentScope().getVariable().get(variableName) != null) {
-			return getCurrentScope().getVariable().get(variableName);
+			var = getCurrentScope().getVariable().get(variableName);
 		} else {
-			return variables.get(variableName);
+			var = variables.get(variableName);
 		}
-
+		if (var == null) {
+			throw new Exception("'" + variableName + "' not declared");
+		}
+		return var;
 	}
 	
 	public boolean checkTypeCompatibility(Type leftType, Type rightType) {
@@ -192,6 +197,14 @@ public class SemanticImpl {
 				return false;
 			return tipos.contains(rightType.getName());
 		}
+	}
+	
+	public boolean checkTypeExists(Type type) throws Exception {
+		boolean existsType = BASIC_TYPES.contains(type) || secondaryTypes.contains(type);
+		if (!existsType) {
+			throw new Exception("Type '" + type.toString() + "' doesn't exists!");
+		}
+		return existsType;
 	}
 	
 	public void checkVariableAttribution(String id, Expression expression)
@@ -256,5 +269,9 @@ public class SemanticImpl {
 		} else {
 			throw new Exception("Error: Type already exists!");
 		}
+	}
+	
+	public void addVariableToTempList(Variable var) {
+		tempVariables.add(var);
 	}
 }

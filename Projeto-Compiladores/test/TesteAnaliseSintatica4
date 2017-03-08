@@ -4,9 +4,9 @@ const
   a1 = 1.1;
 type vector = array [1 .. 5, (r1, r3)] of (r2);
 	 ch_array = array [1 .. 6, (r1, r3)] of (r2);
-	 t14 = a1;
+	 t14 = vector;
 var velocity: vector;
-	tfOut: TextFile;
+	tfOut: t14;
 
 begin
 1: v1 := 2;
