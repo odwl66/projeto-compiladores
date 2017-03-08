@@ -1,0 +1,7 @@
+Analise semântica passos já feitos:
+
+- Não podem ser criados 2 tipos iguais
+- Não podem ser criadas 2 variáveis com mesmo nome
+- Variáveis devem ter tipo declarado anteriormente, ou nativo
+- Ao criar variáveis, elas são armazenadas em uma estrutura de dados
+- Variaveis não podem ter identificador igual a tipo

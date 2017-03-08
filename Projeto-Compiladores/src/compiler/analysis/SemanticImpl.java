@@ -91,7 +91,9 @@ public class SemanticImpl {
 	}
 	
 	private void addVariable(Variable variable) throws Exception {
-		System.out.println("Variable: " + variable.toString());
+		if (checkValidExistingType(new Type(variable.getIdentifier()))){
+			throw new Exception("Duplicate identifier");
+		}
 		if (scopeStack.isEmpty()) {
 			validateVariableGlobal(variable);
 
