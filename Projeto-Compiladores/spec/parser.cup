@@ -1,6 +1,7 @@
 import compiler.util.*;
 import compiler.core.*;
 import compiler.analysis.*;
+import compiler.generator.*;
 
 parser code  {:
  public void report_error(String message, Object info){
@@ -81,7 +82,7 @@ non terminal identifier_list_var_decl;
 start with program;
 
 program ::=
-    program_heading block DOT {:Logger.print("Program definition");:}
+    program_heading block DOT {:Logger.print("Program definition"); CodeGenerator.getInstance().generateFinalAssemblyCode();:}
 ;
 
 program_heading ::=
@@ -337,8 +338,8 @@ variable_declaration ::=
 ;
 
 identifier_list_var_decl ::=
-	IDENTIFIER:id1 COMMA identifier_list_var_decl {:Logger.print("Identifier list variable declaration definition, id: " + id1); SemanticImpl.getInstance().addVariableToTempList(new Variable((String) id1, new Type("null")));:}
-	| IDENTIFIER:id2   {:Logger.print("Identifier list list variable declaration definition, id: " + id2); SemanticImpl.getInstance().addVariableToTempList(new Variable((String) id2, new Type("null")));:}
+	IDENTIFIER:id1 COMMA identifier_list_var_decl {:Logger.print("Identifier list variable declaration definition, id: " + id1); SemanticImpl.getInstance().addVariableToTempList(new Variable((String) id1, new Type("null")));CodeGenerator.getInstance().declareVariable(new Variable((String) id1, new Type("null")));:}
+	| IDENTIFIER:id2   {:Logger.print("Identifier list list variable declaration definition, id: " + id2); SemanticImpl.getInstance().addVariableToTempList(new Variable((String) id2, new Type("null")));CodeGenerator.getInstance().declareVariable(new Variable((String) id2, new Type("null")));:}
 ;
 
 procedure_and_function_declaration_part_opt ::=

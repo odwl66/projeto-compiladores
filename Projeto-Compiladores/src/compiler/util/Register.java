@@ -6,6 +6,8 @@ public enum Register {
 	 SP("SP"), _SP("*SP");
 	
 	private String value;
+	
+	private static Register[] vals = values();
 
 	Register(String value) {
 
@@ -23,4 +25,8 @@ public enum Register {
 	public String toString(){
 		return value;
 	}
+	public Register next()
+    {
+        return vals[(this.ordinal()+1) % vals.length];
+    }
 }

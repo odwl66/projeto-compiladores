@@ -22,7 +22,7 @@ public class SemanticImpl {
 	public static SemanticImpl getInstance() {
 		if (singleton == null) {
 			singleton = new SemanticImpl();
-			codeGenerator = new CodeGenerator();
+			codeGenerator = CodeGenerator.getInstance();
 			calculator = new Calculator();
 			initCollections();
 		}
