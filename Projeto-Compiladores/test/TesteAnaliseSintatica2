@@ -1,4 +1,5 @@
 program p1;
+const Q = 1;
 var W, X, Y, Z, number, sum: Integer;
 
 begin 
@@ -7,7 +8,7 @@ begin
 3: goto 2;
 4: Z := 3;
 
-if (X > 0) then
+if (X > Q) then
 	Z := 3;
 	
 while X > 0 do

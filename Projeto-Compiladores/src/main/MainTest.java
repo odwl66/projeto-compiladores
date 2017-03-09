@@ -51,12 +51,12 @@ public class MainTest {
 		try {
 			s = parser1.parse();
 			SemanticImpl.getInstance().destroy();
-			/*s = parser2.parse();
+			s = parser2.parse();
 			SemanticImpl.getInstance().destroy();
 			s = parser3.parse();
 			SemanticImpl.getInstance().destroy();
 			s = parser4.parse();
-			SemanticImpl.getInstance().destroy();*/
+			SemanticImpl.getInstance().destroy();
 			System.out.println("The compilation process was successfully finished!");
 		} catch (Exception e) {
 			System.out.println(e.getMessage());

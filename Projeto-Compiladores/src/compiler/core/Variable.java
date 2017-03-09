@@ -8,16 +8,23 @@ public class Variable implements Parameter {
 	String identifier;
 	Expression value;
 	Register register;
+	boolean isConstant;
 	
-	public Variable(String identifier, Type type){
+	public Variable(String identifier, Type type, boolean isConstant) {
 		this.type = type;
 		this.identifier = identifier;
+		this.isConstant = isConstant;
+	}
+	
+	public Variable(String identifier, Type type){
+		this(identifier, type, false);
 	}
 	
 	public Variable(String identifier, Type type, Expression value){
 		this.type = type;
 		this.identifier = identifier;
 		this.value = value;
+		this.isConstant = false;
 	}
 
 	public Type getType() {
@@ -53,8 +60,13 @@ public class Variable implements Parameter {
 		return register;
 	}
 	
-	
-	
+	public boolean isConstant() {
+		return isConstant;
+	}
+
+	public void setConstant(boolean isConstant) {
+		this.isConstant = isConstant;
+	}
 	
 	@Override
 	public String toString(){

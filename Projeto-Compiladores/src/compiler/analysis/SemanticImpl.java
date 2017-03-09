@@ -90,7 +90,7 @@ public class SemanticImpl {
 		tempVariables = new ArrayList<Variable>();
 	}
 	
-	private void addVariable(Variable variable) throws Exception {
+	public void addVariable(Variable variable) throws Exception {
 		if (checkValidExistingType(new Type(variable.getIdentifier()))){
 			throw new Exception("Duplicate identifier");
 		}
@@ -227,6 +227,12 @@ public class SemanticImpl {
 					"Incompatible types! %s doesn't match %s", identifierType,
 					expression.getType());
 			throw new Exception(exceptionMessage);
+		}
+	}
+	
+	public void typeIsNumber(Type type) throws Exception {
+		if (!type.getName().equals("integer") && !type.getName().equals("real")) {
+			throw new Exception("Type must be a number!");
 		}
 	}
 

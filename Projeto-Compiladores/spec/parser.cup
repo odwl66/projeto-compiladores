@@ -144,14 +144,14 @@ constant_definition_part_ext ::=
 ;
 
 constant_definition ::=
-	IDENTIFIER:id EQ constant:c {: Logger.print("Constant definition definition, id: " + id + " constant:" + c);:}
+	IDENTIFIER:id EQ constant:c {: Logger.print("Constant definition definition, id: " + id + " constant:" + c); SemanticImpl.getInstance().addVariable(new Variable(id, (Type) c, true));:}
 ;
 
 constant ::=
-	IDENTIFIER:id {: Logger.print("Constant definition, id: " + id);:}	|
-	sign IDENTIFIER:id {: Logger.print("Constant definition, id: " + id);:}	|
-	number:n {: Logger.print("Constant definition, number: " + n);:} |
-	STRING:s {: Logger.print("Constant definition, string: " + s);:}
+	IDENTIFIER:id {: Logger.print("Constant definition, id: " + id); RESULT = SemanticImpl.getInstance().findVariableByIdentifier(id).getType();:}	|
+	sign IDENTIFIER:id {: Logger.print("Constant definition, id: " + id); Type type = SemanticImpl.getInstance().findVariableByIdentifier(id).getType(); SemanticImpl.getInstance().typeIsNumber(type);RESULT = type;:}	|
+	number:n {: Logger.print("Constant definition, number: " + n); RESULT = n;:} |
+	STRING:s {: Logger.print("Constant definition, string: " + s); RESULT = new Type("array");:}
 ;
 
 sign ::=
