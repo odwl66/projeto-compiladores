@@ -159,8 +159,8 @@ sign ::=
 ;
 
 number ::=
-	INTEGER_NUMBER {: Logger.print("Number definition");:}
-	| REAL_NUMBER {: Logger.print("Number definition");:}
+	INTEGER_NUMBER {:Logger.print("Number definition"); RESULT = new Type("integer");:}
+	| REAL_NUMBER {:Logger.print("Number definition"); RESULT = new Type("real");:}
 ;
 
 type_definition_part_opt ::=
@@ -337,8 +337,8 @@ variable_declaration ::=
 ;
 
 identifier_list_var_decl ::=
-	IDENTIFIER:id COMMA identifier_list {:Logger.print("Identifier list definition"); SemanticImpl.getInstance().addVariableToTempList(new Variable((String) id, new Type("null")));:}
-	| IDENTIFIER:id   {:Logger.print("Identifier list definition, id: " + id); SemanticImpl.getInstance().addVariableToTempList(new Variable((String) id, new Type("null")));:}
+	IDENTIFIER:id1 COMMA identifier_list_var_decl {:Logger.print("Identifier list variable declaration definition, id: " + id1); SemanticImpl.getInstance().addVariableToTempList(new Variable((String) id1, new Type("null")));:}
+	| IDENTIFIER:id2   {:Logger.print("Identifier list list variable declaration definition, id: " + id2); SemanticImpl.getInstance().addVariableToTempList(new Variable((String) id2, new Type("null")));:}
 ;
 
 procedure_and_function_declaration_part_opt ::=
@@ -496,36 +496,36 @@ simple_statement ::=
 ;
 
 variable ::=
-	{:Logger.print("Variable - entire variable");:} entire_variable  |
-	{:Logger.print("Variable - component variable");:} component_variable |
-	{:Logger.print("Variable - referenced variable");:} referenced_variable
+	entire_variable:ev {:Logger.print("Variable - entire variable");RESULT = ev;:} |
+	component_variable:cv {:Logger.print("Variable - component variable");RESULT = cv;:} |
+	referenced_variable:rv {:Logger.print("Variable - referenced variable");RESULT = rv;:}
 ;
 
 entire_variable ::=
-	{:Logger.print("entire variable - variable identifier");:} variable_identifier |
-	{:Logger.print("entire variable - field identifier");:} field_identifier 
+	variable_identifier:vi {:Logger.print("entire variable - variable identifier");RESULT = vi;:} |
+	field_identifier:fi {:Logger.print("entire variable - field identifier");RESULT = fi;:} 
 ;
 
 variable_identifier ::=
-	{:Logger.print("variable identifier");:} IDENTIFIER 
+	IDENTIFIER:id {:Logger.print("variable identifier");RESULT = id;:}
 ; 
 
 field_identifier ::=
-	{:Logger.print("field identifier");:} IDENTIFIER 
+	IDENTIFIER:id {:Logger.print("field identifier"); RESULT = id;:}
 ;
 
 component_variable ::= 
-	{:Logger.print("component variable - indexed variable");:} indexed_variable |
-	{:Logger.print("component variable - field designator");:} field_designator |
-	{:Logger.print("component variable - file buffer");:} file_buffer 
+	indexed_variable:iv {:Logger.print("component variable - indexed variable");RESULT = iv;:} |
+	field_designator:fd {:Logger.print("component variable - field designator");RESULT = fd;:} |
+	file_buffer:fb {:Logger.print("component variable - file buffer");RESULT =fb;:}
 ;
 
 indexed_variable ::=
-	{:Logger.print("indexed variable");:} array_variable LBRACK expression_list RBRACK 
+	array_variable:av LBRACK expression_list RBRACK {:Logger.print("indexed variable");RESULT = av;:} 
 ;
 
 array_variable ::=
-	{:Logger.print("array variable");:} variable 
+	variable:v {:Logger.print("array variable");RESULT = v;:} 
 ;
 
 expression_list ::=
@@ -538,23 +538,23 @@ expression_ext ::=
 ;
 
 field_designator ::=
-	{:Logger.print("field designator");:} record_variable DOT field_identifier 
+	record_variable:rv DOT field_identifier {:Logger.print("field designator");RESULT = rv;:} 
 ;
 
 file_buffer ::=
-	{:Logger.print("file buffer");:} file_variable POINTER 
+	file_variable:fv POINTER {:Logger.print("file buffer");RESULT = fv;:} 
 ;
 
 file_variable ::=
-	{:Logger.print("file variable");:} variable 
+	variable:v {:Logger.print("file variable");RESULT = v;:}
 ;
  
 referenced_variable ::=
-	{:Logger.print("referenced variable");:} pointer_variable POINTER 
+	pointer_variable:pv POINTER {:Logger.print("referenced variable");RESULT = pv;:} 
 ;
 
 pointer_variable ::=
-	{:Logger.print("pointer variable");:} variable 
+	variable:v {:Logger.print("pointer variable");RESULT = v;:}
 ;
 
 assignment_statement ::=
@@ -617,12 +617,12 @@ final_expression ::=
 
 
 expression ::=
-	{:Logger.print("Expression - line 1");:} simple_expression relational_operator_opt
+	simple_expression:se relational_operator_opt:roo {:Logger.print("Expression - line 1");RESULT = SemanticImpl.getInstance().getBooleanExpression((Expression)se, (Expression)roo);:}
 ;
 
 relational_operator_opt ::=
 	{:Logger.print("Expression - vazio");:} |
-	{:Logger.print("Expression - line 2");:} relational_operator simple_expression
+	relational_operator simple_expression:se {:Logger.print("Expression - line 2");RESULT = se;:}
 ;
 
 simple_expression ::=
@@ -651,7 +651,16 @@ multiplication_operator_ext ::=
 
 
 factor ::=
-	{:Logger.print("Factor");:} variable | number | STRING | set | NIL | constant_identifier | bound_identifier | function_designator | LPAREN expression RPAREN | NOT factor
+	variable:v {:Logger.print("Factor - variable");Variable var = SemanticImpl.getInstance().findVariableByIdentifier((String)v); RESULT = new Expression(var.getType());:} |
+	number:n {:Logger.print("Factor - number");RESULT = new Expression((Type) n);:} | 
+	STRING {:Logger.print("Factor - string");RESULT = new Expression(new Type("array"));:} | 
+	set {:Logger.print("Factor - set");RESULT = new Expression(new Type("set"));:} | 
+	NIL {:Logger.print("Factor - nil");RESULT = new Expression(new Type("nil"));:} | 
+	constant_identifier | 
+	bound_identifier | 
+	function_designator | 
+	LPAREN expression:exp RPAREN {:Logger.print("Factor - expression");RESULT = exp;:} | 
+	NOT factor:fa {:Logger.print("Factor - not factor");RESULT = fa;:}
 ;
 
 addition_operator ::=
@@ -752,7 +761,7 @@ actual_variable ::=
 
 
 record_variable ::= 
-	{: Logger.print("record variable");:} variable:v 
+	variable:v {:Logger.print("record variable");RESULT = v;:} 
 ;
 
 function_designator ::=
@@ -776,7 +785,7 @@ function_identifier ::=
 ;
  
 constant_identifier ::=
- 	IDENTIFIER
+ 	IDENTIFIER:id {:RESULT = id;:}
 ;
 
 bound_identifier ::=

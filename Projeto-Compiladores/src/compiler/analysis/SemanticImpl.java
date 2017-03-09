@@ -276,4 +276,22 @@ public class SemanticImpl {
 	public void addVariableToTempList(Variable var) {
 		tempVariables.add(var);
 	}
+	
+	public Expression getBooleanExpression(Expression le, Expression re)
+			throws Exception {
+		if (re != null) {
+			if (checkTypeCompatibility(le.getType(), re.getType())
+					|| checkTypeCompatibility(re.getType(), le.getType())) {
+				
+				return new Expression("boolean");
+			} 
+			throw new Exception("Incompatible types!");
+		}
+		return null;
+	}
+	
+	private Type getMajorType(Type type1, Type type2) {
+		return tiposCompativeis.get(type1.getName()).contains(type2.getName()) ? type1
+				: type2;
+	}
 }

@@ -10,7 +10,7 @@ var velocity: vector;
 
 begin
 1: v1 := 2;
-2: tfOut := vector;
+2: tfOut := velocity;
 
 end
 .
