@@ -618,12 +618,12 @@ final_expression ::=
 
 
 expression ::=
-	simple_expression:se relational_operator_opt:roo {:Logger.print("Expression - line 1");RESULT = SemanticImpl.getInstance().getBooleanExpression((Expression)se, (Expression)roo);:}
+	simple_expression:se relational_operator_opt:roo {:Logger.print("Expression - line 1: " + se + " " + roo);RESULT = SemanticImpl.getInstance().getExpressionType((Expression)se, (Expression)roo);:}
 ;
 
 relational_operator_opt ::=
-	{:Logger.print("Relational operator optional - vazio");:} |
-	relational_operator simple_expression:se {:Logger.print("Relational operator optional - line 2");RESULT = se;:}
+	relational_operator simple_expression:se {:Logger.print("Relational operator optional - line 2");RESULT = se;:} |
+	{:Logger.print("Relational operator optional - vazio");:}
 ;
 
 simple_expression ::=
@@ -637,7 +637,13 @@ addition_operator_term_ext ::=
 ;
 
 relational_operator ::=
-	{:Logger.print("relational operator");:} EQ | DIF | LESS | LESSEQ | GREAT | GREATEQ | IN 
+	EQ {:Logger.print("relational operator");:} |
+	DIF {:Logger.print("relational operator");:} |
+	LESST {:Logger.print("relational operator");:} | 
+	LESSEQ {:Logger.print("relational operator");:} | 
+	GREAT {:Logger.print("relational operator");:} | 
+	GREATEQ {:Logger.print("relational operator");:} | 
+	IN {:Logger.print("relational operator");:} 
 ;
 
 
@@ -682,12 +688,12 @@ element_list ::=
 ;
 
 if_statement ::=
-	{:Logger.print("If Statement");:} IF expression THEN statement else_opt
+	IF expression:exp THEN statement else_opt {:Logger.print("If Statement"); SemanticImpl.getInstance().checkBooleanExpression((Expression)exp);:}
 ;
 
 else_opt ::=
-	{:Logger.print("Else opt - vazio");:} | 
-	{:Logger.print("Else opt - else");:} ELSE statement
+	ELSE statement:st {:Logger.print("Else opt - else");:} |
+	{:Logger.print("Else opt - vazio");:}
 ;
 
 case_statement ::=

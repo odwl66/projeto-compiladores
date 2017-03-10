@@ -1,0 +1,20 @@
+program p1;
+const Q = 1;
+	word = 'asd';
+var X, Y, Z: integer;
+
+begin 
+
+X := 3;
+
+if (X > Q) then
+	begin
+		Z := 3;
+	end
+else if X <= Q then
+	Z := 8
+else 
+	Z := 4;
+
+end
+.

@@ -22,3 +22,6 @@
 268:	LD *SP, v1
 276:	LD R1, v1
 284:	LD R2, word
+292:	LD R3, Z
+300:	LD R4, Y
+308:	LD R5, X

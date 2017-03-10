@@ -66,10 +66,14 @@ public class SemanticImpl {
 
 		List<String> booleanCompTypes = new ArrayList<String>();
 		booleanCompTypes.add("boolean");
+		
+		List<String> arrayCompTypes = new ArrayList<String>();
+		booleanCompTypes.add("array");
 
 		tiposCompativeis.put("real", realCompTypes);
 		tiposCompativeis.put("integer", intCompTypes);
 		tiposCompativeis.put("boolean", booleanCompTypes);
+		tiposCompativeis.put("array", arrayCompTypes);
 	}
 	
 	private static void iniTestingOperators() {
@@ -296,13 +300,13 @@ public class SemanticImpl {
 		tempVariables.add(var);
 	}
 	
-	public Expression getBooleanExpression(Expression le, Expression re)
+	private Expression getBooleanExpression(Expression le, Expression re)
 			throws Exception {
 		if (re != null) {
 			if (checkTypeCompatibility(le.getType(), re.getType())
 					|| checkTypeCompatibility(re.getType(), le.getType())) {
 				
-				return new Expression("boolean");
+				return new Expression(new Type("boolean"));
 			} 
 			throw new Exception("Incompatible types!");
 		}
@@ -321,6 +325,20 @@ public class SemanticImpl {
 	public void checkVariableIsInitialized(Variable variable) throws Exception{
 		if (!variable.isInitialized()) {
 			throw new Exception("Variable is not initialized");
+		}
+	}
+	
+	public Expression getExpressionType(Expression leftExpression, Expression rightExpression) throws Exception{
+		Expression booleanExpression = getBooleanExpression(leftExpression, rightExpression);
+		if (booleanExpression == null) {
+			return leftExpression;
+		}
+		return booleanExpression;
+	}
+	
+	public void checkBooleanExpression(Expression expression) throws Exception {
+		if (!expression.getType().equals(new Type("boolean"))) {
+			throw new Exception("Expression must be boolean!");
 		}
 	}
 }

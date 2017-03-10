@@ -32,7 +32,7 @@ ScaleFactor = {Scale}{DigitSequence}
 RealNumber = {DigitSequence}"."{DecimalLiteral}?{ScaleFactor}? | {DigitSequence}{ScaleFactor}
 
 /* String and Character literals */
-String = "'"[^\n\r\"]+"'"
+String = "'"[^\n\r\']+"'"
 
 /* Identifiers */
 Identifier = [:jletter:][:jletterdigit:]*
@@ -83,6 +83,7 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     "nil"						   { return symbol(sym.NIL); }
     "not"						   { return symbol(sym.NOT); }
     "if"						   { return symbol(sym.IF); }
+    "else"						   { return symbol(sym.ELSE); }
     
     /* Boolean literals*/
 

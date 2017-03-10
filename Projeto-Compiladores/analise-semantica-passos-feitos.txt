@@ -9,3 +9,4 @@ Analise semântica passos já feitos:
 - Expressões booleanas devem ter tipos compativeis
 - Constante é incluida nas variáveis, como uma variável especial e com as mesmas checagens da construção de variáveis
 - Expressões que usam variáveis checam se elas existem e se foram inicializadas
+- Comandos if devem ter expressão do tipo booleana
