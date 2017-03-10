@@ -622,18 +622,18 @@ expression ::=
 ;
 
 relational_operator_opt ::=
-	{:Logger.print("Expression - vazio");:} |
-	relational_operator simple_expression:se {:Logger.print("Expression - line 2");RESULT = se;:}
+	{:Logger.print("Relational operator optional - vazio");:} |
+	relational_operator simple_expression:se {:Logger.print("Relational operator optional - line 2");RESULT = se;:}
 ;
 
 simple_expression ::=
-	{:Logger.print("Simple expression - line 1");:} term addition_operator_term_ext |
-	{:Logger.print("Simple expression - line 1");:} sign term addition_operator_term_ext
+	term:t1 addition_operator_term_ext:aote1 {:Logger.print("Simple expression - line 1: " + t1); RESULT = SemanticImpl.getInstance().getExpressionCheckingError((Expression)t1, (Expression)aote1);:} |
+	sign term:t2 addition_operator_term_ext:aote2 {:Logger.print("Simple expression - line 2"); RESULT = SemanticImpl.getInstance().getExpressionCheckingError((Expression)t2, (Expression)aote2);:}
 ;
 
 addition_operator_term_ext ::=
 	{:Logger.print("Adition operator term ext - vazio");:} |
-	{:Logger.print("Adition operator term ext - line 2");:} addition_operator term addition_operator_term_ext
+	addition_operator term:t addition_operator_term_ext:aote {:Logger.print("Adition operator term ext - line 2"); RESULT = SemanticImpl.getInstance().getExpressionCheckingError((Expression)t, (Expression)aote);:} 
 ;
 
 relational_operator ::=
@@ -642,18 +642,18 @@ relational_operator ::=
 
 
 term ::=
-	{:Logger.print("Term - line 1");:} factor multiplication_operator_ext
+	factor:f multiplication_operator_ext:moe {:Logger.print("Term - line 1: " + f + " " + moe); RESULT = SemanticImpl.getInstance().getExpressionCheckingError((Expression)f, (Expression)moe);:}
 ;
 
 multiplication_operator_ext ::= 
     {:Logger.print("Multiplication operator ext - vazio");:} |
-    {:Logger.print("Multiplication operator ext - line 2");:} multiplication_operator factor multiplication_operator_ext
+    multiplication_operator factor:f multiplication_operator_ext:moe {:Logger.print("Multiplication operator ext - line 2"); RESULT = SemanticImpl.getInstance().getExpressionCheckingError((Expression)f, (Expression)moe);:}
 ;
 
 
 factor ::=
 	variable:v {:Logger.print("Factor - variable");Variable var = SemanticImpl.getInstance().findVariableByIdentifier((String)v); RESULT = new Expression(var.getType());:} |
-	number:n {:Logger.print("Factor - number");RESULT = new Expression((Type) n);:} | 
+	number:n {:Logger.print("Factor - number: " + n);RESULT = new Expression((Type) n);:} | 
 	STRING {:Logger.print("Factor - string");RESULT = new Expression(new Type("array"));:} | 
 	set {:Logger.print("Factor - set");RESULT = new Expression(new Type("set"));:} | 
 	NIL {:Logger.print("Factor - nil");RESULT = new Expression(new Type("nil"));:} | 

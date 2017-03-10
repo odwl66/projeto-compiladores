@@ -1,6 +1,7 @@
 program p1;
 const Q = 1;
-var W, X, Y, Z, number, sum: Integer;
+	word = 'asd';
+var W, X, Y, Z, number, sum: integer;
 
 begin 
 1:	X := 10;

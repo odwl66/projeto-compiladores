@@ -190,6 +190,16 @@ public class SemanticImpl {
 		return var;
 	}
 	
+	public Expression getExpressionCheckingError(Expression leftExpression, Expression rightExpression) throws Exception {
+		if (rightExpression == null) {
+			return leftExpression;
+		}
+		if (!checkTypeCompatibility(leftExpression.getType(), rightExpression.getType())) {
+			throw new Exception("Incompatible types!");
+		}
+		return new Expression(getMajorType(leftExpression.getType(), rightExpression.getType()));
+	}
+	
 	public boolean checkTypeCompatibility(Type leftType, Type rightType) {
 		if (leftType.equals(rightType)) {
 			return true;
