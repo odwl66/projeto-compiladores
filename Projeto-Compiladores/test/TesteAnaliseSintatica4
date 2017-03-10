@@ -1,16 +1,13 @@
 program p1;
-const
-  C_FNAME = 'textfile.txt';
-  a1 = 1.1;
-type vector = array [1 .. 5, (r1, r3)] of (r2);
-	 ch_array = array [1 .. 6, (r1, r3)] of (r2);
-	 t14 = vector;
-var velocity: vector;
-	tfOut: t14;
 
+type string = array [1 .. 5] of char;
+	 
+var word, v1: string;
+	
 begin
-1: v1 := 2;
-2: tfOut := velocity;
+
+word := 'asd';
+v1 := word;
 
 end
 .

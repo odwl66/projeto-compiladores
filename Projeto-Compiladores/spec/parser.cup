@@ -559,7 +559,7 @@ pointer_variable ::=
 ;
 
 assignment_statement ::=
-  {:Logger.print("Assignment Statement - line 1");:} variable ASSIGNMENT expression |
+  variable:var ASSIGNMENT expression {:Logger.print("Assignment Statement - line 1"); SemanticImpl.getInstance().initializeVariable((String)var);:} |
   {:Logger.print("Assignment Statement - line 2");:} function_identifier ASSIGNMENT expression 
 ;
 
@@ -652,7 +652,7 @@ multiplication_operator_ext ::=
 
 
 factor ::=
-	variable:v {:Logger.print("Factor - variable");Variable var = SemanticImpl.getInstance().findVariableByIdentifier((String)v); RESULT = new Expression(var.getType());:} |
+	variable:v {:Logger.print("Factor - variable");Variable var = SemanticImpl.getInstance().findVariableByIdentifier((String)v); SemanticImpl.getInstance().checkVariableIsInitialized((Variable)var);RESULT = new Expression(var.getType());:} |
 	number:n {:Logger.print("Factor - number: " + n);RESULT = new Expression((Type) n);:} | 
 	STRING {:Logger.print("Factor - string");RESULT = new Expression(new Type("array"));:} | 
 	set {:Logger.print("Factor - set");RESULT = new Expression(new Type("set"));:} | 

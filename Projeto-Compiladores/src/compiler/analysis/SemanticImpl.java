@@ -313,4 +313,14 @@ public class SemanticImpl {
 		return tiposCompativeis.get(type1.getName()).contains(type2.getName()) ? type1
 				: type2;
 	}
+	
+	public void initializeVariable(String variableName) throws Exception {
+		findVariableByIdentifier(variableName).setInitialized(true);
+	}
+	
+	public void checkVariableIsInitialized(Variable variable) throws Exception{
+		if (!variable.isInitialized()) {
+			throw new Exception("Variable is not initialized");
+		}
+	}
 }

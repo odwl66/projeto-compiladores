@@ -8,12 +8,13 @@ public class Variable implements Parameter {
 	String identifier;
 	Expression value;
 	Register register;
-	boolean isConstant;
-	
+	boolean isConstant, isInitialized;
+
 	public Variable(String identifier, Type type, boolean isConstant) {
 		this.type = type;
 		this.identifier = identifier;
 		this.isConstant = isConstant;
+		this.isInitialized = isConstant;
 	}
 	
 	public Variable(String identifier, Type type){
@@ -25,6 +26,7 @@ public class Variable implements Parameter {
 		this.identifier = identifier;
 		this.value = value;
 		this.isConstant = false;
+		this.isInitialized = false;
 	}
 
 	public Type getType() {
@@ -73,4 +75,11 @@ public class Variable implements Parameter {
 		return this.identifier + " of type: " + getType().getName();
 	}
 
+	public boolean isInitialized() {
+		return isInitialized;
+	}
+
+	public void setInitialized(boolean isInitialized) {
+		this.isInitialized = isInitialized;
+	}
 }

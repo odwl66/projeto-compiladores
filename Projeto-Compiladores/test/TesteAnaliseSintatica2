@@ -5,9 +5,11 @@ var W, X, Y, Z, number, sum: integer;
 
 begin 
 1:	X := 10;
-2:	Y := 2;
+2:	Y := X + 2;
 3: goto 2;
 4: Z := 3;
+
+number := 1;
 
 if (X > Q) then
 	Z := 3;
