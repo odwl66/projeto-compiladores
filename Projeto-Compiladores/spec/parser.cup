@@ -16,11 +16,12 @@ parser code  {:
 :};
 
 terminal COMMA, SEMICOLON, COLON, DOT, DOT_DOT, LPAREN, RPAREN, LBRACK, RBRACK, POINTER, NIL, NOT;
-terminal EQ, SIGN, ASSIGNMENT, DIF, LESST, LESSEQ, GREAT, GREATEQ, IN, PLUS, LESS, MULT, DIVI; 
+terminal EQ, ASSIGNMENT, DIF, LESST, LESSEQ, GREAT, GREATEQ, IN, PLUS, LESS, MULT, DIVI; 
 terminal PROGRAM, CONST, LABEL, TYPE, PACKED, ARRAY, OF, RECORD, BEGIN, END, CASE, SET, FILE, VAR, PROCEDURE, FUNCTION, FORWARD;
 terminal OR, DIV, MOD, AND;
 terminal IF, ELSE, DO, WHILE, FOR, BREAK, CONTINUE, RETURN, GOTO, UNTIL, REPEAT, TO, DOWNTO, WITH, THEN;
 
+terminal java.lang.Boolean BOOLEAN_LITERAL;
 terminal java.lang.String IDENTIFIER;
 terminal java.lang.String STRING;
 terminal java.lang.Number INTEGER_NUMBER;
@@ -78,6 +79,8 @@ non terminal element_list;
 non terminal relational_operator_opt;
 non terminal sign;
 non terminal identifier_list_var_decl;
+
+precedence left BOOLEAN_LITERAL, IDENTIFIER;
 
 start with program;
 
@@ -151,7 +154,8 @@ constant ::=
 	IDENTIFIER:id {: Logger.print("Constant definition, id: " + id); RESULT = SemanticImpl.getInstance().findVariableByIdentifier(id).getType();:}	|
 	sign IDENTIFIER:id {: Logger.print("Constant definition, id: " + id); Type type = SemanticImpl.getInstance().findVariableByIdentifier(id).getType(); SemanticImpl.getInstance().typeIsNumber(type);RESULT = type;:}	|
 	number:n {: Logger.print("Constant definition, number: " + n); RESULT = n;:} |
-	STRING:s {: Logger.print("Constant definition, string: " + s); RESULT = new Type("array");:}
+	STRING:s {: Logger.print("Constant definition, string: " + s); RESULT = new Type("array");:} |
+	BOOLEAN_LITERAL:bl {: Logger.print("Constant definition, boolean literal: " + bl); RESULT = new Type("boolean");:}
 ;
 
 sign ::=
@@ -658,6 +662,7 @@ multiplication_operator_ext ::=
 
 
 factor ::=
+	BOOLEAN_LITERAL:bl {:Logger.print("Factor - boolean literal");RESULT = new Expression(new Type("boolean"));:} | 
 	variable:v {:Logger.print("Factor - variable");Variable var = SemanticImpl.getInstance().findVariableByIdentifier((String)v); SemanticImpl.getInstance().checkVariableIsInitialized((Variable)var);RESULT = new Expression(var.getType());:} |
 	number:n {:Logger.print("Factor - number: " + n);RESULT = new Expression((Type) n);:} | 
 	STRING {:Logger.print("Factor - string");RESULT = new Expression(new Type("array"));:} | 
@@ -798,5 +803,3 @@ constant_identifier ::=
 bound_identifier ::=
 	IDENTIFIER
 ;
-
-

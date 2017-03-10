@@ -85,7 +85,12 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     "if"						   { return symbol(sym.IF); }
     "else"						   { return symbol(sym.ELSE); }
     
-    /* Boolean literals*/
+    /* Booleans */
+    "true"                          { return symbol(sym.BOOLEAN_LITERAL, new Boolean(true)); }
+    "false"                         { return symbol(sym.BOOLEAN_LITERAL, new Boolean(false)); }
+
+	/* Other */
+    "in"							{ return symbol(sym.IN); }
 
     /* Identifier*/
 	{Identifier} 					{ return symbol(sym.IDENTIFIER,yytext());}
@@ -104,7 +109,6 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     ";"                             { return symbol(sym.SEMICOLON); }
     ".."                            { return symbol(sym.DOT_DOT); }
     "^"                             { return symbol(sym.POINTER); }
-    
 
     /* String literal */
     {String}                        { return symbol(sym.STRING,new String(yytext())); }
@@ -117,6 +121,8 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
 
     /* White spaces */
     {WhiteSpace}				    { /*just ignore it*/ }
+    
+    /* Logical Operators*/
 
     /* Arithmetical operators*/
     "+"  							{ return symbol(sym.PLUS); }
@@ -125,9 +131,6 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     "/"								{ return symbol(sym.DIVI); }
     
     /* Operators */
-     
-    /* Logical Operators*/
-    {Sign}                          { return symbol(sym.SIGN); }
     
     /* Relational Operators*/	
     "<>" 							{ return symbol(sym.DIF); }
@@ -135,7 +138,6 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     "<="							{ return symbol(sym.LESSEQ); }
     ">" 							{ return symbol(sym.GREAT); }
     ">=" 							{ return symbol(sym.GREATEQ); }
-    "in"							{ return symbol(sym.IN); }
     
 
     /* Assignment */

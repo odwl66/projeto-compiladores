@@ -25,3 +25,4 @@
 292:	LD R3, Z
 300:	LD R4, Y
 308:	LD R5, X
+316:	LD R6, sera
