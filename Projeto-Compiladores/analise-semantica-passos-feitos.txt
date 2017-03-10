@@ -5,5 +5,6 @@ Analise semântica passos já feitos:
 - Variáveis devem ter tipo declarado anteriormente, ou nativo
 - Ao criar variáveis, elas são armazenadas em uma estrutura de dados
 - Variaveis não podem ter identificador igual a tipo
+- Variáveis devem ter tipo válido
 - Expressões booleanas devem ter tipos compativeis
 - Constante é incluida nas variáveis, como uma variável especial e com as mesmas checagens da construção de variáveis

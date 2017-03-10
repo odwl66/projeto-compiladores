@@ -82,6 +82,9 @@ public class SemanticImpl {
 	}
 	
 	public void addVariablesFromTempList(Type type) throws Exception {
+		if (!checkValidExistingType(type)) {
+			throw new Exception("Type doesn't exist!");
+		}
 		for (Variable variable : tempVariables) {
 			variable.setType(type);
 			addVariable(variable);
