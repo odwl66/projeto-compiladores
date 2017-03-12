@@ -17,7 +17,10 @@ begin
       m:= z;
 end;
 
+
 begin
+a := 6;
+b := 7;
 
 end
 .
