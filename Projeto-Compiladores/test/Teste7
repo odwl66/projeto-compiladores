@@ -1,10 +1,14 @@
 program exProcedure;
 
 label 10, 11;
-var x, y, a, b: integer;
+var x, y, a, b, z, m: integer;
 
 procedure findMin(var z, m: integer); 
 begin
+	x := 1;
+	y := 2;
+	m := 3;
+	z := 4; 
    if x < y then
       m:= x
    else
@@ -15,10 +19,7 @@ end;
 
 begin
 
-a := 5;
-b := 6;
-
-findMin(a, b);
-
 end
 .
+
+
