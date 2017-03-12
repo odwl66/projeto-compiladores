@@ -362,9 +362,15 @@ procedure_declaration ::=
 	| procedure_heading SEMICOLON directive {: Logger.print("Procedure declaration definition");:}
 ;
 
-procedure_heading ::=
-	PROCEDURE IDENTIFIER formal_parameter_list_opt {: Logger.print("Procedure heading definition");:}
-;
+
+procedure_heading ::= PROCEDURE:p IDENTIFIER:id formal_parameter_list_opt {: Logger.print("PROCEDURE: " + p); 
+															if(p != null){ 
+																SemanticImpl.getInstance().lineError = ((int) p);
+															} if(id != null){
+																Logger.print("identifier: " + id);
+																SemanticImpl.getInstance().addIdentifier(id.toString());
+																SemanticImpl.getInstance().addProcedure(id.toString());
+															} :};
 
 formal_parameter_list_opt ::=
 	|
@@ -435,12 +441,24 @@ function_parameter_section ::=
 	function_heading {: Logger.print("Function parameter section definition");:}
 ;
 
-function_heading ::=
-	FUNCTION IDENTIFIER formal_parameter_list_opt COLON result_type {: Logger.print("Function heading definition");:}
+function_heading ::= FUNCTION:f IDENTIFIER:id formal_parameter_list_opt:fp COLON result_type:rt {:
+		Logger.print("function heading returned type: " + fp);
+		if(f != null){ 
+			Logger.print("entrou no f !=null");
+			SemanticImpl.getInstance().lineError = ((int) f);
+		} if(id != null){ 
+			Logger.print("entrou no id!=null ");
+			Logger.print("rt: " + rt);
+			SemanticImpl.getInstance().addIdentifier(id.toString());
+			SemanticImpl.getInstance().addFunction(id.toString(), rt.toString());
+		} :}
 ;
 
-result_type ::=
-	type_identifier {: Logger.print("Result type definition");:}
+
+result_type ::= type_identifier:rt {: if(rt != null){ 
+			Logger.print("Result type definition : " + rt);		 
+			RESULT = rt; 
+			} :}
 ;
 
 procedure_body ::=
@@ -803,3 +821,4 @@ constant_identifier ::=
 bound_identifier ::=
 	IDENTIFIER
 ;
+
