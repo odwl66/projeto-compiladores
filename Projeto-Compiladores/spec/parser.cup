@@ -450,7 +450,7 @@ function_heading ::= FUNCTION:f IDENTIFIER:id formal_parameter_list_opt:fp COLON
 			Logger.print("entrou no id!=null ");
 			Logger.print("rt: " + rt);
 			SemanticImpl.getInstance().addIdentifier(id.toString());
-			SemanticImpl.getInstance().addFunction(id.toString(), rt.toString());
+			SemanticImpl.getInstance().addFunction(id.toString(), rt);
 		} :}
 ;
 

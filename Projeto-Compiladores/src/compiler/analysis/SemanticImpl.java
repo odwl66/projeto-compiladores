@@ -22,7 +22,7 @@ public class SemanticImpl {
 	private ArrayList<Function> functions_ = new ArrayList<Function>();
 	HashMap<String, ArrayList<String>> funcParams = new HashMap<String, ArrayList<String>>();
 	HashMap<String, ArrayList<String>> procedures = new HashMap<String, ArrayList<String>>();
-	HashMap<String, String> functions = new HashMap<String, String>();
+	HashMap<String, Object> functions = new HashMap<String, Object>();
 	private ArrayList<String> identifiers = new ArrayList<String>();
 	
 	public static SemanticImpl getInstance() {
@@ -259,14 +259,15 @@ public class SemanticImpl {
 		}
 	}
 	
-	public void addFunction(String identifier, String returnedType) {
+	public void addFunction(String identifier, Object returnedType) {
 		String identifierSearched = identifier.toLowerCase();
-		String returnedTypeSearched = returnedType.toLowerCase();
+		Type returnedTypeSearched = (Type) returnedType;
 		if (functions.containsKey(identifierSearched)
 				&& identifiers.contains(identifierSearched)) {
 			System.out.println("Identifier " + identifier + " already exists");
 			System.exit(1);
 		} else {
+
 			if (!BASIC_TYPES.contains(returnedTypeSearched)) {
 				System.out.println("Pascal does not regonizes the type: "
 						+ returnedType);
