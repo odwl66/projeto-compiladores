@@ -62,7 +62,7 @@ public class MainTest {
 			System.out.println(e.getMessage());
 		}
 		try {
-			scanner6 = new Scanner(new BufferedReader(new FileReader(filePath7)));
+			scanner7 = new Scanner(new BufferedReader(new FileReader(filePath7)));
 		} catch (FileNotFoundException e) {
 			System.out.println(e.getMessage());
 		}
@@ -76,7 +76,7 @@ public class MainTest {
 		Parser parser7 = new Parser(scanner7);
 		Symbol s = null;
 		try {
-			s = parser1.parse();
+			/*s = parser1.parse();
 			SemanticImpl.getInstance().destroy();
 			s = parser2.parse();
 			SemanticImpl.getInstance().destroy();
@@ -87,7 +87,7 @@ public class MainTest {
 			s = parser5.parse();
 			SemanticImpl.getInstance().destroy();
 			s = parser6.parse();
-			SemanticImpl.getInstance().destroy();
+			SemanticImpl.getInstance().destroy();*/
 			s = parser7.parse();
 			SemanticImpl.getInstance().destroy();
 			System.out.println("The compilation process was successfully finished!");
