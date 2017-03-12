@@ -7,6 +7,8 @@ import compiler.util.Calculator;
 
 public class SemanticImpl {
 	
+	public static int lineError = 0; 
+	
 	private HashMap<String, Variable> variables = new HashMap<String, Variable>();
 	private static SemanticImpl singleton;
 	static CodeGenerator codeGenerator;
