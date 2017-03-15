@@ -147,14 +147,14 @@ constant_definition_part_ext ::=
 ;
 
 constant_definition ::=
-	IDENTIFIER:id EQ constant:c {: Logger.print("Constant definition definition, id: " + id + " constant:" + c); SemanticImpl.getInstance().addVariable(new Variable(id, (Type) c, true));:}
+	IDENTIFIER:id EQ constant:c {: Logger.print("Constant definition definition, id: " + id + " constant:" + c); SemanticImpl.getInstance().addVariable(new Variable(id, (Type) c, true));CodeGenerator.getInstance().GenerateConstantDefinition(new Variable((String) id, new Type("null")));:}
 ;
 
 constant ::=
 	IDENTIFIER:id {: Logger.print("Constant definition, id: " + id); RESULT = SemanticImpl.getInstance().findVariableByIdentifier(id).getType();:}	|
 	sign IDENTIFIER:id {: Logger.print("Constant definition, id: " + id); Type type = SemanticImpl.getInstance().findVariableByIdentifier(id).getType(); SemanticImpl.getInstance().typeIsNumber(type);RESULT = type;:}	|
 	number:n {: Logger.print("Constant definition, number: " + n); RESULT = n;:} |
-	STRING:s {: Logger.print("Constant definition, string: " + s); RESULT = new Type("array");:} |
+	STRING:s {: Logger.print("Constant definition, string: " + s); RESULT = new Type("array");CodeGenerator.getInstance().currentValue(s);:} |
 	BOOLEAN_LITERAL:bl {: Logger.print("Constant definition, boolean literal: " + bl); RESULT = new Type("boolean");:}
 ;
 
@@ -164,8 +164,8 @@ sign ::=
 ;
 
 number ::=
-	INTEGER_NUMBER {:Logger.print("Number definition"); RESULT = new Type("integer");:}
-	| REAL_NUMBER {:Logger.print("Number definition"); RESULT = new Type("real");:}
+	INTEGER_NUMBER:number {:Logger.print("Number definition"); RESULT = new Type("integer");CodeGenerator.getInstance().currentValue(number.intValue());:}
+	| REAL_NUMBER:real {:Logger.print("Number definition"); RESULT = new Type("real");CodeGenerator.getInstance().currentValue(real.floatValue());:}
 ;
 
 type_definition_part_opt ::=
