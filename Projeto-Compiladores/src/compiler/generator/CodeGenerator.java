@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 
+import compiler.core.Expression;
 import compiler.core.Variable;
 import compiler.util.*;
 import jflex.gui.GeneratorThread;
@@ -17,6 +18,7 @@ public class CodeGenerator {
 	private static CodeGenerator instance;
 	private Register currentRegister;
 	private HashMap<Register, Variable> registers;
+	private Object currentValue;
 	
 	private CodeGenerator() {
 		setAdress(100);
@@ -51,6 +53,9 @@ public class CodeGenerator {
 		currentRegister = currentRegister.next();
 
 	}
+	public void currentValue(Object n){
+		this.currentValue = n;
+	}
 	
 	private void iterateAddress(){
 		setAdress(getAddress()+ 8);
@@ -61,6 +66,17 @@ public class CodeGenerator {
 		assingRegister(variable);
 		iterateAddress();
 	}
+	
+	public void GenerateConstantDefinition(Variable variable){
+		code += getAddress() + ":\tLD " + currentRegister + ", " + variable.getIdentifier() + "\n";
+		assingRegister(variable);
+		iterateAddress();
+		code += getAddress() + ":\tST " + variable.getIdentifier() + ", " +  this.currentValue + "\n";
+		iterateAddress();
+	}
+	
+	
+	
 	
 	public void generateFinalAssemblyCode() throws IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(new File("assembly.txt")));
