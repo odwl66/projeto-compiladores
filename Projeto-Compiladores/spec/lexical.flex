@@ -143,4 +143,7 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     /* Assignment */
     "="								{ return symbol(sym.EQ); }
     ":="                            { return symbol(sym.ASSIGNMENT); }
+    
+    /*gambis*/
+    "~"								{ return symbol(sym.TIL); }
 }

@@ -18,7 +18,7 @@ parser code  {:
 terminal COMMA, SEMICOLON, COLON, DOT, DOT_DOT, LPAREN, RPAREN, LBRACK, RBRACK, POINTER, NIL, NOT;
 terminal EQ, ASSIGNMENT, DIF, LESST, LESSEQ, GREAT, GREATEQ, IN, PLUS, LESS, MULT, DIVI; 
 terminal PROGRAM, CONST, LABEL, TYPE, PACKED, ARRAY, OF, RECORD, BEGIN, END, CASE, SET, FILE, VAR, PROCEDURE, FUNCTION, FORWARD;
-terminal OR, DIV, MOD, AND;
+terminal OR, DIV, MOD, AND, TIL;
 terminal IF, ELSE, DO, WHILE, FOR, BREAK, CONTINUE, RETURN, GOTO, UNTIL, REPEAT, TO, DOWNTO, WITH, THEN;
 
 terminal java.lang.Boolean BOOLEAN_LITERAL;
@@ -167,6 +167,7 @@ number ::=
 	INTEGER_NUMBER {:Logger.print("Number definition"); RESULT = new Type("integer");:}
 	| REAL_NUMBER {:Logger.print("Number definition"); RESULT = new Type("real");:}
 ;
+
 
 type_definition_part_opt ::=
 	|
@@ -593,8 +594,7 @@ structured_statement ::=
 ;
 
 procedure_statement ::=
-  {:Logger.print("Procedure statement - line 2");:} procedure_identifier |
-  {:Logger.print("Procedure statement - line 1");:} procedure_identifier actual_parameter_list
+  {:Logger.print("Procedure statement - line 1");:} TIL IDENTIFIER actual_parameter_list 
 ;
 
 goto_statement ::=
@@ -680,6 +680,7 @@ multiplication_operator_ext ::=
 
 
 factor ::=
+	function_designator {:Logger.print("Factor - designator");RESULT = new Expression(new Type("array"));:} | 
 	BOOLEAN_LITERAL:bl {:Logger.print("Factor - boolean literal");RESULT = new Expression(new Type("boolean"));:} | 
 	variable:v {:Logger.print("Factor - variable");Variable var = SemanticImpl.getInstance().findVariableByIdentifier((String)v); SemanticImpl.getInstance().checkVariableIsInitialized((Variable)var);RESULT = new Expression(var.getType());:} |
 	number:n {:Logger.print("Factor - number: " + n);RESULT = new Expression((Type) n);:} | 
@@ -688,7 +689,6 @@ factor ::=
 	NIL {:Logger.print("Factor - nil");RESULT = new Expression(new Type("nil"));:} | 
 	constant_identifier | 
 	bound_identifier | 
-	function_designator | 
 	LPAREN expression:exp RPAREN {:Logger.print("Factor - expression");RESULT = exp;:} | 
 	NOT factor:fa {:Logger.print("Factor - not factor");RESULT = fa;:}
 ;
@@ -795,7 +795,7 @@ record_variable ::=
 ;
 
 function_designator ::=
-	function_identifier | actual_parameter_list
+		IDENTIFIER actual_parameter_list
 ;
 
 variable_identifier ::=
