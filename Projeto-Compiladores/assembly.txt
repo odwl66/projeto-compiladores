@@ -1,4 +1,5 @@
 100:	LD SP, #8000
+<<<<<<< HEAD
 108:	LD R1, a1
 116:	ST a1, 1.1
 124:	LD R2, b1
@@ -60,3 +61,9 @@
 572:	LD R3, Y
 580:	LD R4, X
 588:	LD R5, sera
+=======
+108:	LD R1, ret
+116:	LD R2, b
+124:	LD R3, a
+132:	LD R4, result
+>>>>>>> 8e3731d4ddc8be574e9a7cf933c8805add901377

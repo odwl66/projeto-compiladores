@@ -7,6 +7,8 @@ import compiler.util.Calculator;
 
 public class SemanticImpl {
 	
+	public static int lineError = 0; 
+	
 	private HashMap<String, Variable> variables = new HashMap<String, Variable>();
 	private static SemanticImpl singleton;
 	static CodeGenerator codeGenerator;
@@ -17,7 +19,11 @@ public class SemanticImpl {
 	private List<Variable> tempVariables = new ArrayList<Variable>();
 	private Stack<ScopedEntity> scopeStack = new Stack<ScopedEntity>();
 	private List<Type> secondaryTypes = new ArrayList<Type>();
-	private ArrayList<Function> functions = new ArrayList<Function>();
+	private ArrayList<Function> functions_ = new ArrayList<Function>();
+	HashMap<String, ArrayList<String>> funcParams = new HashMap<String, ArrayList<String>>();
+	HashMap<String, ArrayList<String>> procedures = new HashMap<String, ArrayList<String>>();
+	HashMap<String, Object> functions = new HashMap<String, Object>();
+	private ArrayList<String> identifiers = new ArrayList<String>();
 	
 	public static SemanticImpl getInstance() {
 		if (singleton == null) {
@@ -161,7 +167,7 @@ public class SemanticImpl {
 		}
 		Type identifierType = findVariableByIdentifier(id).getType();
 
-		for (Function f : functions) {
+		for (Function f : functions_) {
 			if (f.getName().equals(function)) {
 				if (!checkTypeCompatibility(identifierType,
 						f.getDeclaredReturnType())) {
@@ -252,6 +258,99 @@ public class SemanticImpl {
 			throw new Exception("Type must be a number!");
 		}
 	}
+	
+	public void addFunction(String identifier, Object returnedType) {
+		String identifierSearched = identifier.toLowerCase();
+		Type returnedTypeSearched = (Type) returnedType;
+		if (functions.containsKey(identifierSearched)
+				&& identifiers.contains(identifierSearched)) {
+			System.out.println("Identifier " + identifier + " already exists");
+			System.exit(1);
+		} else {
+
+			if (!BASIC_TYPES.contains(returnedTypeSearched)) {
+				System.out.println("Pascal does not regonizes the type: "
+						+ returnedType);
+				System.exit(1);
+			} else {
+				functions.put(identifierSearched, returnedTypeSearched);
+				funcParams.put(identifierSearched, null);
+			}
+		}
+	}
+	
+	public void addFunctionParams(String identifier,
+			String functionReturnedType, ArrayList<String> params) {
+		String searchedIdentifier = identifier.toLowerCase();
+		String searchedIdentifierType = functionReturnedType.toLowerCase();
+		if (functions.containsKey(searchedIdentifier)
+				|| identifiers.contains(searchedIdentifier)) {
+			if (functions.get(searchedIdentifier)
+					.equals(searchedIdentifierType)) {
+				funcParams.put(searchedIdentifier, params);
+			} else {
+				System.out
+						.println("Function " + identifier
+								+ " was not declared with type "
+								+ functionReturnedType);
+				System.exit(1);
+			}
+		} else {
+			System.out.println("Function " + identifier + " does not exists");
+			System.exit(1);
+		}
+	}
+	
+	public void addProcedure(String identifier) {
+		String identifierSearched = identifier.toLowerCase();
+		if (procedures.containsKey(identifierSearched)
+				&& identifiers.contains(identifierSearched)) {
+			System.out.println("Identifier " + identifier + " already exists");
+			System.exit(1);
+		} else {
+			procedures.put(identifierSearched, null);
+		}
+
+	}
+	
+	public void addProcedureParams(String identifier, ArrayList<String> params) {
+		String searchedIdentifier = identifier.toLowerCase();
+		if (procedures.containsKey(searchedIdentifier)
+				|| identifiers.contains(searchedIdentifier)) {
+			funcParams.put(searchedIdentifier, params);
+		} else {
+			System.out.println("Function " + identifier + " does not exists");
+			System.exit(1);
+		}
+
+	}
+	
+	public void addIdentifier(String identifier) {
+		if (identifiers.contains(identifier.toLowerCase())) {
+			System.out.println("Duplicated identifier: " + identifier);
+			System.exit(1);
+		} else {
+			identifiers.add(identifier);
+		}
+	}
+	
+	
+	public boolean checkFunctionOverload(String identifier,
+			ArrayList<String> params) {
+		String searchedIdentifier = identifier.toLowerCase();
+		if (functions.containsKey(searchedIdentifier)
+				|| identifiers.contains(searchedIdentifier)) {
+			ArrayList<String> existingParams = funcParams
+					.get(searchedIdentifier);
+			if (existingParams.equals(params)) {
+				System.out.println("It is not possible to create function "
+						+ identifier + ": duplicated params");
+				return false;
+			}
+		}
+		return true;
+	}
+
 
 	private Operation getOperator(String op) {
 		switch (op) {
