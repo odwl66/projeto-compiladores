@@ -55,7 +55,7 @@ public class Variable implements Parameter {
 	
 	public void setRegister(Register register) {
 		this.register = register;
-		getValue().setRegister(register);
+//		getValue().setRegister(register);
 	}
 	
 	public Register getRegister() {

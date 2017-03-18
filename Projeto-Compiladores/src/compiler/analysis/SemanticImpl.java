@@ -440,4 +440,13 @@ public class SemanticImpl {
 			throw new Exception("Expression must be boolean!");
 		}
 	}
+	
+	public Variable getVariable(String identifier) throws Exception {
+		for (Variable var : tempVariables) {
+			if (identifier.equals(var.getIdentifier())) {
+				return var;
+			}
+		}
+		return findVariableByIdentifier(identifier);
+	}
 }

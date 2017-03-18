@@ -343,8 +343,13 @@ variable_declaration ::=
 ;
 
 identifier_list_var_decl ::=
-	IDENTIFIER:id1 COMMA identifier_list_var_decl {:Logger.print("Identifier list variable declaration definition, id: " + id1); SemanticImpl.getInstance().addVariableToTempList(new Variable((String) id1, new Type("null")));CodeGenerator.getInstance().declareVariable(new Variable((String) id1, new Type("null")));:}
-	| IDENTIFIER:id2   {:Logger.print("Identifier list list variable declaration definition, id: " + id2); SemanticImpl.getInstance().addVariableToTempList(new Variable((String) id2, new Type("null")));CodeGenerator.getInstance().declareVariable(new Variable((String) id2, new Type("null")));:}
+	IDENTIFIER:id1 COMMA identifier_list_var_decl {:Logger.print("Identifier list variable declaration definition, id: " + id1);
+	SemanticImpl.getInstance().addVariableToTempList(new Variable((String) id1, new Type("null")));
+	CodeGenerator.getInstance().declareVariable(new Variable((String) id1, new Type("null")));:}
+	| IDENTIFIER:id2   {:Logger.print("Identifier list list variable declaration definition, id: " + id2);
+						Variable variable = new Variable((String) id2, new Type("null"));
+						SemanticImpl.getInstance().addVariableToTempList(variable);
+						CodeGenerator.getInstance().declareVariable(variable);:}
 ;
 
 procedure_and_function_declaration_part_opt ::=
@@ -582,7 +587,9 @@ pointer_variable ::=
 ;
 
 assignment_statement ::=
-  variable:var ASSIGNMENT expression {:Logger.print("Assignment Statement - line 1"); SemanticImpl.getInstance().initializeVariable((String)var);:} |
+  variable:var ASSIGNMENT expression:e {:Logger.print("Assignment Statement - line 1");
+  										SemanticImpl.getInstance().initializeVariable((String) var);
+  										CodeGenerator.getInstance().assignment((Expression) e, (String) var);:} |
   {:Logger.print("Assignment Statement - line 2");:} function_identifier ASSIGNMENT expression 
 ;
 
@@ -681,10 +688,17 @@ multiplication_operator_ext ::=
 
 factor ::=
 	function_designator {:Logger.print("Factor - designator");RESULT = new Expression(new Type("array"));:} | 
-	BOOLEAN_LITERAL:bl {:Logger.print("Factor - boolean literal");RESULT = new Expression(new Type("boolean"));:} | 
-	variable:v {:Logger.print("Factor - variable");Variable var = SemanticImpl.getInstance().findVariableByIdentifier((String)v); SemanticImpl.getInstance().checkVariableIsInitialized((Variable)var);RESULT = new Expression(var.getType());:} |
-	number:n {:Logger.print("Factor - number: " + n);RESULT = new Expression((Type) n);:} | 
-	STRING {:Logger.print("Factor - string");RESULT = new Expression(new Type("array"));:} | 
+	BOOLEAN_LITERAL:bl {:Logger.print("Factor - boolean literal");
+						RESULT = new Expression("BOOLEAN", new Type("boolean"));:} | 
+	variable:v {:Logger.print("Factor - variable");
+				Variable var = SemanticImpl.getInstance().findVariableByIdentifier((String)v);
+				SemanticImpl.getInstance().checkVariableIsInitialized((Variable)var);
+				CodeGenerator.getInstance().currentValue(var);
+				RESULT = new Expression("VARIABLE", var.getType());:} |
+	number:n {:Logger.print("Factor - number: " + n);
+				RESULT = new Expression("NUMBER", (Type) n);:} | 
+	STRING {:Logger.print("Factor - string");
+			RESULT = new Expression("STRING", new Type("array"));:} | 
 	set {:Logger.print("Factor - set");RESULT = new Expression(new Type("set"));:} | 
 	NIL {:Logger.print("Factor - nil");RESULT = new Expression(new Type("nil"));:} | 
 	constant_identifier | 
