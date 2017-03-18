@@ -10,3 +10,9 @@ Analise semântica passos já feitos:
 - Constante é incluida nas variáveis, como uma variável especial e com as mesmas checagens da construção de variáveis
 - Expressões que usam variáveis checam se elas existem e se foram inicializadas
 - Comandos if devem ter expressão do tipo booleana
+- Não é possível criar uma função com um tipo que não seja algum tipo básico de pascal
+- Não é possível criar uma procedure com um tipo que não seja algum tipo básico de pascal
+- Não é possíve criar uma função com o mesmo identificador de outra
+- Não é possíve criar uma procedure com o mesmo identificador de outra
+- Não é possíve adicionar parâmentros a funções que não foram declaradas
+- Não é possíve adicionar parâmentros a procedures que não foram declaradas
