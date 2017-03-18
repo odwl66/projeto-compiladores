@@ -88,7 +88,7 @@ public class MainTest {
 			SemanticImpl.getInstance().destroy();
 			s = parser6.parse();
 			SemanticImpl.getInstance().destroy();*/
-			s = parser7.parse();
+			s = parser6.parse();
 			SemanticImpl.getInstance().destroy();
 			System.out.println("The compilation process was successfully finished!");
 		} catch (Exception e) {

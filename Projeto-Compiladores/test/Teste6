@@ -22,4 +22,6 @@ begin
    a := 100;
    b := 200;
    max := max(a,b);
+
+ 
 end.
