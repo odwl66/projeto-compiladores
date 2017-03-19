@@ -11,7 +11,12 @@ import java.util.Set;
 
 import compiler.analysis.SemanticImpl;
 import compiler.core.Expression;
+import compiler.core.Type;
 import compiler.core.Variable;
+import compiler.core.operators.Operator;
+import compiler.core.types.Bool;
+import compiler.core.types.CharArray;
+import compiler.core.types.VariableType;
 import compiler.util.*;
 import jflex.gui.GeneratorThread;
 
@@ -28,6 +33,8 @@ public class CodeGenerator {
 	private Map<String, Variable> vars;
 	private HashMap<Register, Variable> registers;
 	private Object currentValue;
+	
+	private Operator currentOperator;
 	
 	private CodeGenerator() {
 		setAdress(100);
@@ -63,44 +70,86 @@ public class CodeGenerator {
 		currentRegister = currentRegister.next();
 
 	}
-	public void currentValue(Object n){
+
+	public void currentValue(Object n) {
 		this.currentValue = n;
 	}
 	
+	public void setCurrentOperator(Operator currentOperator) {
+		this.currentOperator = currentOperator;
+	}
+
+	public Expression generateSimpleExpression(Expression e1, Expression e2) throws Exception {
+		try {
+			if (currentOperator == null) {
+				return SemanticImpl.getInstance().getExpressionCheckingError((Expression)e1, (Expression)e2);
+			}
+		
+			this.currentOperator.setExpressions(e1, e2);
+			writeLine(currentOperator.getMnemonic(), String.valueOf(e1.getRegister()),
+					String.valueOf(e1.getRegister()), String.valueOf(e2.getRegister()));
+		
+			Expression expression = new Expression(new Type(e1.getType().getName()));
+			expression.setRegister(e1.getRegister());
+			
+			currentOperator = null;
+
+			return expression;
+		} catch (Throwable t) {
+			t.printStackTrace();
+			return SemanticImpl.getInstance().getExpressionCheckingError((Expression)e1, (Expression)e2);
+		}
+	}
+
 	private void iterateAddress(){
 		setAdress(getAddress()+ 8);
 	}
 	
-	public void declareVariable(Variable variable) throws Exception{
-		SemanticImpl.getInstance()
-		.getVariable(variable.getIdentifier())
-		.setRegister(currentRegister);
-
+	public void declare(Expression e) {
+		e.setRegister(currentRegister);
+		Type type = e.getType();
 		currentRegister = currentRegister.next();
+		
+		if (type instanceof VariableType) {
+			writeLine(LD, String.valueOf(e.getRegister()), ((VariableType) type).getValue().getIdentifier());
+			return;
+		}
+
+		switch (type.getName()) {
+			case "integer":
+			case "real":
+				writeLine(LD, String.valueOf(e.getRegister()), "#" + currentValue);
+				break;
+			case "array":
+				writeLine(LD, String.valueOf(e.getRegister()), String.valueOf(((CharArray) e.getType()).getValue()));
+			case "boolean":
+				writeLine(LD, String.valueOf(e.getRegister()), String.valueOf(((Bool) e.getType()).getValue()));
+				break;
+			default:
+				throw new RuntimeException("an error while declaring literal value");
+		}
+	}
+	
+	public void declareVariable(Variable variable) throws Exception{
+		// FIXME REMOVE ME
 	}
 	
 	public void assignment(Expression expression, String var) throws Exception {
-		Variable var2 = SemanticImpl.getInstance().getVariable(var);
-
-		switch (expression.getTarget()) {
-		case VARIABLE:
-			writeLine(LD, String.valueOf(var2.getRegister()), ((Variable) currentValue).getIdentifier());
-			writeLine(ST, var, String.valueOf(var2.getRegister()));
-			break;
-		case BOOLEAN:
-			writeLine(LD, String.valueOf(var2.getRegister()), String.valueOf(currentValue));
-			writeLine(ST, var, String.valueOf(var2.getRegister()));
-			break;
-		case STRING:
-			writeLine(LD, String.valueOf(var2.getRegister()), String.valueOf(currentValue));
-			writeLine(ST, var, String.valueOf(var2.getRegister()));
-			break;
-		case NUMBER:
-			writeLine(LD, String.valueOf(var2.getRegister()), "#" + currentValue);
-			writeLine(ST, var, String.valueOf(var2.getRegister()));
-			break;
-		default:
-			break;
+		try {
+			Type type = expression.getType();
+			
+			switch (type.getName()) {
+				case "integer":
+				case "real":
+				case "array":
+				case "boolean":
+					writeLine(ST, var, String.valueOf(expression.getRegister()));
+					break;
+				default:
+					throw new RuntimeException("an error while assingning literal value");
+			}
+		} catch (Throwable t) {
+			t.printStackTrace();
 		}
 	}
 
@@ -118,6 +167,11 @@ public class CodeGenerator {
 		writer.close();
 	}
 	
+	private void writeLine(String op, String field1, String field2, String field3) {
+		code += String.format(Locale.getDefault(), "%s:\t%s %s, %s, %s\n",
+				getAddress(), op, field1, field2, field3);
+		iterateAddress();
+	}
 	
 	private void writeLine(String op, String field1, String field2) {
 		code += String.format(Locale.getDefault(), "%s:\t%s %s, %s\n",
