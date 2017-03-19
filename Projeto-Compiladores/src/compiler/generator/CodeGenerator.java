@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
+import java.util.Stack;
 
 import compiler.analysis.SemanticImpl;
 import compiler.core.Expression;
@@ -18,7 +18,6 @@ import compiler.core.types.Bool;
 import compiler.core.types.CharArray;
 import compiler.core.types.VariableType;
 import compiler.util.*;
-import jflex.gui.GeneratorThread;
 
 public class CodeGenerator {
 	private static final String TAB = "\t";
@@ -34,7 +33,7 @@ public class CodeGenerator {
 	private HashMap<Register, Variable> registers;
 	private Object currentValue;
 	
-	private Operator currentOperator;
+	private Stack<Object> expressionStack = new Stack<>();
 	
 	private CodeGenerator() {
 		setAdress(100);
@@ -74,25 +73,47 @@ public class CodeGenerator {
 	public void currentValue(Object n) {
 		this.currentValue = n;
 	}
+
+	public void addTerm(Object term) {
+		expressionStack.add(term);
+	}
 	
-	public void setCurrentOperator(Operator currentOperator) {
-		this.currentOperator = currentOperator;
+	public Expression generateExpression() throws Exception {
+		expressionStack.elements();
+		Expression exp1 = null;
+		Expression exp2 = null;
+		Operator op = null;
+		for (Object current : expressionStack) {
+			if (current instanceof Expression) {
+				exp2 = exp1;
+				exp1 = (Expression) current;
+			} else if (current instanceof Operator) {
+				op = (Operator) current;
+			}
+			
+			if (exp1 != null && exp2 != null && op != null) {
+				Expression expression = generateSimpleExpression(op, exp1, exp2);
+				exp1 = expression;
+				exp2 = null;
+				op = null;
+			}
+		}
+		expressionStack.clear();
+		return exp1;
 	}
 
-	public Expression generateSimpleExpression(Expression e1, Expression e2) throws Exception {
+	public Expression generateSimpleExpression(Operator op, Expression e1, Expression e2) throws Exception {
 		try {
-			if (currentOperator == null) {
+			if (op == null) {
 				return SemanticImpl.getInstance().getExpressionCheckingError((Expression)e1, (Expression)e2);
 			}
 		
-			this.currentOperator.setExpressions(e1, e2);
-			writeLine(currentOperator.getMnemonic(), String.valueOf(e1.getRegister()),
+			op.setExpressions(e1, e2);
+			writeLine(op.getMnemonic(), String.valueOf(e1.getRegister()),
 					String.valueOf(e1.getRegister()), String.valueOf(e2.getRegister()));
 		
 			Expression expression = new Expression(new Type(e1.getType().getName()));
 			expression.setRegister(e1.getRegister());
-			
-			currentOperator = null;
 
 			return expression;
 		} catch (Throwable t) {

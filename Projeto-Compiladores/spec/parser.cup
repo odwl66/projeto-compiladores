@@ -661,9 +661,10 @@ relational_operator_opt ::=
 
 simple_expression ::=
 	term:t1 addition_operator_term_ext:aote1 {:Logger.print("Simple expression - line 1: " + t1);
+	CodeGenerator.getInstance().addTerm(t1);
 	CodeGenerator.getInstance().currentValue(t1);
 	SemanticImpl.getInstance().getExpressionCheckingError((Expression)t1, (Expression)aote1);
-	Expression expression = CodeGenerator.getInstance().generateSimpleExpression((Expression)t1, (Expression)aote1);
+	Expression expression = CodeGenerator.getInstance().generateExpression();
 	RESULT = expression; :}
 	| sign term:t2 addition_operator_term_ext:aote2 {:Logger.print("Simple expression - line 2"); RESULT = SemanticImpl.getInstance().getExpressionCheckingError((Expression)t2, (Expression)aote2);:}
 ;
@@ -671,7 +672,8 @@ simple_expression ::=
 addition_operator_term_ext ::=
 	{:Logger.print("Adition operator term ext - vazio");:} |
 	addition_operator:op term:t addition_operator_term_ext:aote {:Logger.print("Adition operator term ext - line 2");
-												CodeGenerator.getInstance().setCurrentOperator((Operator) op);
+												CodeGenerator.getInstance().addTerm(t);
+												CodeGenerator.getInstance().addTerm(op);
 												RESULT = SemanticImpl.getInstance().getExpressionCheckingError((Expression)t, (Expression)aote);:} 
 ;
 
@@ -689,14 +691,16 @@ relational_operator ::=
 term ::=
 	factor:f multiplication_operator_ext:moe {:Logger.print("Term - line 1: " + f + " " + moe);
 	SemanticImpl.getInstance().getExpressionCheckingError((Expression)f, (Expression)moe);
-	Expression expression = CodeGenerator.getInstance().generateSimpleExpression((Expression) f, (Expression) moe);
+	CodeGenerator.getInstance().addTerm(f);
+	Expression expression = CodeGenerator.getInstance().generateExpression();
 	RESULT = expression; :}
 ;
 
 multiplication_operator_ext ::= 
     {:Logger.print("Multiplication operator ext - vazio");:} |
     multiplication_operator:op factor:f multiplication_operator_ext:moe {: Logger.print("Multiplication operator ext - line 2");
-    CodeGenerator.getInstance().setCurrentOperator((Operator) op);
+    CodeGenerator.getInstance().addTerm(f);
+    CodeGenerator.getInstance().addTerm(op);
     RESULT = SemanticImpl.getInstance().getExpressionCheckingError((Expression)f, (Expression)moe); :}
 ;
 
