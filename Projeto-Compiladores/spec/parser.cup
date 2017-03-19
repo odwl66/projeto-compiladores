@@ -689,7 +689,8 @@ multiplication_operator_ext ::=
 factor ::=
 	function_designator {:Logger.print("Factor - designator");RESULT = new Expression(new Type("array"));:} | 
 	BOOLEAN_LITERAL:bl {:Logger.print("Factor - boolean literal");
-						RESULT = new Expression("BOOLEAN", new Type("boolean"));:} | 
+						RESULT = new Expression("BOOLEAN", new Type("boolean"));
+						CodeGenerator.getInstance().currentValue(bl);:} | 
 	variable:v {:Logger.print("Factor - variable");
 				Variable var = SemanticImpl.getInstance().findVariableByIdentifier((String)v);
 				SemanticImpl.getInstance().checkVariableIsInitialized((Variable)var);

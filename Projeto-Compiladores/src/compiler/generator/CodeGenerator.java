@@ -88,6 +88,8 @@ public class CodeGenerator {
 			writeLine(ST, var, String.valueOf(var2.getRegister()));
 			break;
 		case BOOLEAN:
+			writeLine(LD, String.valueOf(var2.getRegister()), String.valueOf(currentValue));
+			writeLine(ST, var, String.valueOf(var2.getRegister()));
 			break;
 		case STRING:
 			writeLine(LD, String.valueOf(var2.getRegister()), String.valueOf(currentValue));
