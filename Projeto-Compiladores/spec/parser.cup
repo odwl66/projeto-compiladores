@@ -519,8 +519,10 @@ statement_sequence ::=
 ;
 
 aux_statement_sequence ::=
-  {:Logger.print("Aux statement sequence - Vazio -> ");:} |
-  {:Logger.print("Aux statement sequence - line 2 -> statement ; aux_statement_sequence");:}  SEMICOLON statement aux_statement_sequence
+  {:Logger.print("Aux statement sequence - Vazio -> ");  :} |
+  {:Logger.print("Aux statement sequence - line 2 -> statement ; aux_statement_sequence");:}  SEMICOLON
+  {: CodeGenerator.getInstance().finishStatement(); :} 
+  statement aux_statement_sequence
 ;
 
 optional_label ::=
@@ -766,12 +768,15 @@ element_list ::=
 ;
 
 if_statement ::=
-	IF expression:exp THEN statement else_opt {:Logger.print("If Statement"); SemanticImpl.getInstance().checkBooleanExpression((Expression)exp);:}
+	IF expression:exp {: CodeGenerator.getInstance().declareIfStatement((Expression) exp); :} THEN statement 
+	{: CodeGenerator.getInstance().outOfIf(); :}
+	else_opt {:Logger.print("If Statement");
+	SemanticImpl.getInstance().checkBooleanExpression((Expression)exp);:}
 ;
 
 else_opt ::=
 	ELSE statement:st {:Logger.print("Else opt - else");:} |
-	{:Logger.print("Else opt - vazio");:}
+	{: Logger.print("Else opt - vazio"); :}
 ;
 
 case_statement ::=
