@@ -81,6 +81,7 @@ public class CodeGenerator {
 	
 	public void assignment(Expression expression, String var) throws Exception {
 		Variable var2 = SemanticImpl.getInstance().getVariable(var);
+
 		switch (expression.getTarget()) {
 		case VARIABLE:
 			writeLine(LD, String.valueOf(var2.getRegister()), ((Variable) currentValue).getIdentifier());
@@ -89,6 +90,8 @@ public class CodeGenerator {
 		case BOOLEAN:
 			break;
 		case STRING:
+			writeLine(LD, String.valueOf(var2.getRegister()), String.valueOf(currentValue));
+			writeLine(ST, var, String.valueOf(var2.getRegister()));
 			break;
 		case NUMBER:
 			writeLine(LD, String.valueOf(var2.getRegister()), "#" + currentValue);

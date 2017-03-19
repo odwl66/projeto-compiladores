@@ -697,8 +697,8 @@ factor ::=
 				RESULT = new Expression("VARIABLE", var.getType());:} |
 	number:n {:Logger.print("Factor - number: " + n);
 				RESULT = new Expression("NUMBER", (Type) n);:} | 
-	STRING {:Logger.print("Factor - string");
-			RESULT = new Expression("STRING", new Type("array"));:} | 
+	STRING:s {:Logger.print("Factor - string");
+			RESULT = new Expression("STRING", new Type("array"));CodeGenerator.getInstance().currentValue(s);:} | 
 	set {:Logger.print("Factor - set");RESULT = new Expression(new Type("set"));:} | 
 	NIL {:Logger.print("Factor - nil");RESULT = new Expression(new Type("nil"));:} | 
 	constant_identifier | 
