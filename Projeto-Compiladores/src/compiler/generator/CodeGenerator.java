@@ -143,6 +143,7 @@ public class CodeGenerator {
 				break;
 			case "array":
 				writeLine(LD, String.valueOf(e.getRegister()), String.valueOf(((CharArray) e.getType()).getValue()));
+				break;
 			case "boolean":
 				writeLine(LD, String.valueOf(e.getRegister()), String.valueOf(((Bool) e.getType()).getValue()));
 				break;
@@ -155,7 +156,7 @@ public class CodeGenerator {
 		// FIXME REMOVE ME
 	}
 	
-	public void assignment(Expression expression, String var) throws Exception {
+	public void assignment(Expression expression, String var) {
 		try {
 			Type type = expression.getType();
 			
@@ -173,13 +174,14 @@ public class CodeGenerator {
 			t.printStackTrace();
 		}
 	}
-
-	public void GenerateConstantDefinition(Variable variable){
-		code += getAddress() + ":\tLD " + currentRegister + ", #" + this.currentValue + "\n";
-		iterateAddress();
-		code += getAddress() + ":\tST " + variable.getIdentifier() + ", " +  currentRegister + "\n";
-		assingRegister(variable);
-		iterateAddress();
+	
+	public void declaredConstant(Variable var, Expression expression) {
+		try {
+			declare(expression);
+			assignment(expression, var.getIdentifier());
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
 	}
 
 	public void generateFinalAssemblyCode() throws IOException {
