@@ -7,9 +7,15 @@ public class Expression {
 	private String value;
 	private String context;
 	private Register register;
+	private Target target;
 	
 	public Expression(Type t) {
 		this.type = t;
+	}
+	
+	public Expression(String target, Type t) {
+		this.type = t;
+		setTarget(target);
 	}
 	
 	public Expression(String name) {
@@ -61,5 +67,20 @@ public class Expression {
 
 	public String getAssemblyValue() {
 		return this.value;
+	}
+	
+	public void setTarget(String target) {
+		this.target = Target.valueOf(target);
+	}
+	
+	public Target getTarget() {
+		return target;
+	}
+	
+	public enum Target {
+		NUMBER,
+		STRING,
+		BOOLEAN,
+		VARIABLE;
 	}
 }

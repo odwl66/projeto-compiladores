@@ -1,5 +1,7 @@
 import compiler.util.*;
 import compiler.core.*;
+import compiler.core.types.*;
+import compiler.core.operators.*;
 import compiler.analysis.*;
 import compiler.generator.*;
 
@@ -147,15 +149,22 @@ constant_definition_part_ext ::=
 ;
 
 constant_definition ::=
-	IDENTIFIER:id EQ constant:c {: Logger.print("Constant definition definition, id: " + id + " constant:" + c); SemanticImpl.getInstance().addVariable(new Variable(id, (Type) c, true));CodeGenerator.getInstance().GenerateConstantDefinition(new Variable((String) id, new Type("null")));:}
+	IDENTIFIER:id EQ constant:c {: Logger.print("Constant definition definition, id: " + id + " constant:" + c);
+	Variable variable = new Variable(id, (Type) c, true);
+	SemanticImpl.getInstance().addVariable(variable);
+	CodeGenerator.getInstance().declaredConstant(variable, new Expression((Type) c));
+	:}
 ;
 
 constant ::=
 	IDENTIFIER:id {: Logger.print("Constant definition, id: " + id); RESULT = SemanticImpl.getInstance().findVariableByIdentifier(id).getType();:}	|
 	sign IDENTIFIER:id {: Logger.print("Constant definition, id: " + id); Type type = SemanticImpl.getInstance().findVariableByIdentifier(id).getType(); SemanticImpl.getInstance().typeIsNumber(type);RESULT = type;:}	|
 	number:n {: Logger.print("Constant definition, number: " + n); RESULT = n;:} |
-	STRING:s {: Logger.print("Constant definition, string: " + s); RESULT = new Type("array");CodeGenerator.getInstance().currentValue(s);:} |
-	BOOLEAN_LITERAL:bl {: Logger.print("Constant definition, boolean literal: " + bl); RESULT = new Type("boolean");:}
+	STRING:s {: Logger.print("Constant definition, string: " + s);
+							RESULT = new CharArray((String) s);
+							CodeGenerator.getInstance().currentValue(s);:} |
+	BOOLEAN_LITERAL:bl {: Logger.print("Constant definition, boolean literal: " + bl); 
+							RESULT = new Bool((Boolean) bl); :}
 ;
 
 sign ::=
@@ -164,8 +173,12 @@ sign ::=
 ;
 
 number ::=
-	INTEGER_NUMBER:number {:Logger.print("Number definition"); RESULT = new Type("integer");CodeGenerator.getInstance().currentValue(number.intValue());:}
-	| REAL_NUMBER:real {:Logger.print("Number definition"); RESULT = new Type("real");CodeGenerator.getInstance().currentValue(real.floatValue());:}
+	INTEGER_NUMBER:number {:Logger.print("Number definition: " + number);
+							CodeGenerator.getInstance().currentValue(number.intValue());
+							RESULT = new IntegerNumber(number.intValue());:}
+	| REAL_NUMBER:real {:Logger.print("Number definition");
+						CodeGenerator.getInstance().currentValue(real.floatValue()); 
+						RESULT = new RealNumber(real.floatValue());:}
 ;
 
 
@@ -343,8 +356,11 @@ variable_declaration ::=
 ;
 
 identifier_list_var_decl ::=
-	IDENTIFIER:id1 COMMA identifier_list_var_decl {:Logger.print("Identifier list variable declaration definition, id: " + id1); SemanticImpl.getInstance().addVariableToTempList(new Variable((String) id1, new Type("null")));CodeGenerator.getInstance().declareVariable(new Variable((String) id1, new Type("null")));:}
-	| IDENTIFIER:id2   {:Logger.print("Identifier list list variable declaration definition, id: " + id2); SemanticImpl.getInstance().addVariableToTempList(new Variable((String) id2, new Type("null")));CodeGenerator.getInstance().declareVariable(new Variable((String) id2, new Type("null")));:}
+	IDENTIFIER:id1 COMMA identifier_list_var_decl {:Logger.print("Identifier list variable declaration definition, id: " + id1);
+	SemanticImpl.getInstance().addVariableToTempList(new Variable((String) id1, new Type("null"))); :}
+	| IDENTIFIER:id2   {:Logger.print("Identifier list list variable declaration definition, id: " + id2);
+						Variable variable = new Variable((String) id2, new Type("null"));
+						SemanticImpl.getInstance().addVariableToTempList(variable); :}
 ;
 
 procedure_and_function_declaration_part_opt ::=
@@ -503,8 +519,10 @@ statement_sequence ::=
 ;
 
 aux_statement_sequence ::=
-  {:Logger.print("Aux statement sequence - Vazio -> ");:} |
-  {:Logger.print("Aux statement sequence - line 2 -> statement ; aux_statement_sequence");:}  SEMICOLON statement aux_statement_sequence
+  {:Logger.print("Aux statement sequence - Vazio -> ");  :} |
+  {:Logger.print("Aux statement sequence - line 2 -> statement ; aux_statement_sequence");:}  SEMICOLON
+  {: CodeGenerator.getInstance().finishStatement(); :} 
+  statement aux_statement_sequence
 ;
 
 optional_label ::=
@@ -582,7 +600,9 @@ pointer_variable ::=
 ;
 
 assignment_statement ::=
-  variable:var ASSIGNMENT expression {:Logger.print("Assignment Statement - line 1"); SemanticImpl.getInstance().initializeVariable((String)var);:} |
+  variable:var ASSIGNMENT expression:e {:Logger.print("Assignment Statement - line 1");
+  										SemanticImpl.getInstance().initializeVariable((String) var);
+  										CodeGenerator.getInstance().assignment((Expression) e, (String) var);:} |
   {:Logger.print("Assignment Statement - line 2");:} function_identifier ASSIGNMENT expression 
 ;
 
@@ -649,13 +669,21 @@ relational_operator_opt ::=
 ;
 
 simple_expression ::=
-	term:t1 addition_operator_term_ext:aote1 {:Logger.print("Simple expression - line 1: " + t1); RESULT = SemanticImpl.getInstance().getExpressionCheckingError((Expression)t1, (Expression)aote1);:} |
-	sign term:t2 addition_operator_term_ext:aote2 {:Logger.print("Simple expression - line 2"); RESULT = SemanticImpl.getInstance().getExpressionCheckingError((Expression)t2, (Expression)aote2);:}
+	term:t1 addition_operator_term_ext:aote1 {:Logger.print("Simple expression - line 1: " + t1);
+	CodeGenerator.getInstance().addTerm(t1);
+	CodeGenerator.getInstance().currentValue(t1);
+	SemanticImpl.getInstance().getExpressionCheckingError((Expression)t1, (Expression)aote1);
+	Expression expression = CodeGenerator.getInstance().generateExpression();
+	RESULT = expression; :}
+	| sign term:t2 addition_operator_term_ext:aote2 {:Logger.print("Simple expression - line 2"); RESULT = SemanticImpl.getInstance().getExpressionCheckingError((Expression)t2, (Expression)aote2);:}
 ;
 
 addition_operator_term_ext ::=
 	{:Logger.print("Adition operator term ext - vazio");:} |
-	addition_operator term:t addition_operator_term_ext:aote {:Logger.print("Adition operator term ext - line 2"); RESULT = SemanticImpl.getInstance().getExpressionCheckingError((Expression)t, (Expression)aote);:} 
+	addition_operator:op term:t addition_operator_term_ext:aote {:Logger.print("Adition operator term ext - line 2");
+												CodeGenerator.getInstance().addTerm(t);
+												CodeGenerator.getInstance().addTerm(op);
+												RESULT = SemanticImpl.getInstance().getExpressionCheckingError((Expression)t, (Expression)aote);:} 
 ;
 
 relational_operator ::=
@@ -670,21 +698,44 @@ relational_operator ::=
 
 
 term ::=
-	factor:f multiplication_operator_ext:moe {:Logger.print("Term - line 1: " + f + " " + moe); RESULT = SemanticImpl.getInstance().getExpressionCheckingError((Expression)f, (Expression)moe);:}
+	factor:f multiplication_operator_ext:moe {:Logger.print("Term - line 1: " + f + " " + moe);
+	SemanticImpl.getInstance().getExpressionCheckingError((Expression)f, (Expression)moe);
+	CodeGenerator.getInstance().addTerm(f);
+	Expression expression = CodeGenerator.getInstance().generateExpression();
+	RESULT = expression; :}
 ;
 
 multiplication_operator_ext ::= 
     {:Logger.print("Multiplication operator ext - vazio");:} |
-    multiplication_operator factor:f multiplication_operator_ext:moe {:Logger.print("Multiplication operator ext - line 2"); RESULT = SemanticImpl.getInstance().getExpressionCheckingError((Expression)f, (Expression)moe);:}
+    multiplication_operator:op factor:f multiplication_operator_ext:moe {: Logger.print("Multiplication operator ext - line 2");
+    CodeGenerator.getInstance().addTerm(f);
+    CodeGenerator.getInstance().addTerm(op);
+    RESULT = SemanticImpl.getInstance().getExpressionCheckingError((Expression)f, (Expression)moe); :}
 ;
-
 
 factor ::=
 	function_designator {:Logger.print("Factor - designator");RESULT = new Expression(new Type("array"));:} | 
-	BOOLEAN_LITERAL:bl {:Logger.print("Factor - boolean literal");RESULT = new Expression(new Type("boolean"));:} | 
-	variable:v {:Logger.print("Factor - variable");Variable var = SemanticImpl.getInstance().findVariableByIdentifier((String)v); SemanticImpl.getInstance().checkVariableIsInitialized((Variable)var);RESULT = new Expression(var.getType());:} |
-	number:n {:Logger.print("Factor - number: " + n);RESULT = new Expression((Type) n);:} | 
-	STRING {:Logger.print("Factor - string");RESULT = new Expression(new Type("array"));:} | 
+	BOOLEAN_LITERAL:bl {:Logger.print("Factor - boolean literal");
+						Expression expression = new Expression("BOOLEAN", new Bool(bl));
+						CodeGenerator.getInstance().declare(expression);
+						CodeGenerator.getInstance().currentValue(bl);
+						RESULT = expression; :} | 
+	variable:v {:Logger.print("Factor - variable");
+				Variable var = SemanticImpl.getInstance().findVariableByIdentifier((String)v);
+				SemanticImpl.getInstance().checkVariableIsInitialized((Variable)var);
+				CodeGenerator.getInstance().currentValue(var);
+				Expression expression = new Expression("VARIABLE", new VariableType(var));
+				CodeGenerator.getInstance().declare(expression);
+				RESULT = expression; :} |
+	number:n {:Logger.print("Factor - number: " + n);
+				Expression expression = new Expression("NUMBER", (Type) n);
+				CodeGenerator.getInstance().declare(expression);
+				RESULT = expression;:} | 
+	STRING:s {:Logger.print("Factor - string");
+				Expression expression = new Expression("STRING", new CharArray(s));
+				CodeGenerator.getInstance().declare(expression);
+				RESULT = expression;
+				CodeGenerator.getInstance().currentValue(s);:} | 
 	set {:Logger.print("Factor - set");RESULT = new Expression(new Type("set"));:} | 
 	NIL {:Logger.print("Factor - nil");RESULT = new Expression(new Type("nil"));:} | 
 	constant_identifier | 
@@ -694,11 +745,17 @@ factor ::=
 ;
 
 addition_operator ::=
-	{:Logger.print("Addition operator");:} PLUS | LESS | OR
+	{:Logger.print("Addition operator");:} PLUS {: RESULT = new Addition(); :} 
+	| LESS {: RESULT = new Subtraction(); :}
+	| OR {: RESULT = new Or(); :}
 ;
 
 multiplication_operator ::= 
-	{:Logger.print("Multiplication operator");:} MULT | DIVI | DIV | MOD | AND
+	{:Logger.print("Multiplication operator");:} MULT {: RESULT = new Multiplication(); :}
+	| DIVI {: RESULT = new DivisionInteger(); :}
+	| DIV {: RESULT = new Division(); :}
+	| MOD {: RESULT = new Module(); :}
+	| AND {: RESULT = new And(); :}
 ;
 
 set ::=
@@ -711,12 +768,15 @@ element_list ::=
 ;
 
 if_statement ::=
-	IF expression:exp THEN statement else_opt {:Logger.print("If Statement"); SemanticImpl.getInstance().checkBooleanExpression((Expression)exp);:}
+	IF expression:exp {: CodeGenerator.getInstance().declareIfStatement((Expression) exp); :} THEN statement 
+	{: CodeGenerator.getInstance().outOfIf(); :}
+	else_opt {:Logger.print("If Statement");
+	SemanticImpl.getInstance().checkBooleanExpression((Expression)exp);:}
 ;
 
 else_opt ::=
 	ELSE statement:st {:Logger.print("Else opt - else");:} |
-	{:Logger.print("Else opt - vazio");:}
+	{: Logger.print("Else opt - vazio"); :}
 ;
 
 case_statement ::=

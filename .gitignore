@@ -10,3 +10,6 @@ Projeto-Compiladores/src/compiler/generated/Scanner.java
 Projeto-Compiladores/src/compiler/generated/Scanner.java~
 Projeto-Compiladores/src/compiler/generated/sym.java
 *~
+*.class
+*assembly.txt
+*.swp
