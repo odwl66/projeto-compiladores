@@ -29,12 +29,12 @@ type t1 = a1 .. b1;
 	t15 = ^ t14;
 	t16 = t15;
 var a11, a12, a13, a14 : 1 .. 2;
-	b11, b12, b13, b14 : (a1, a2);
+	b11, b12, b13, b14 : (integer, integer);
 	c11: t15;
-procedure p1(a1, a2 : a1; a3, a4 : packed array [b1 .. b2 : c1] of a2; a5, a6 : array [b3 .. b4 : c2] of a3; var a7, a8 : a1; var a3, a4 : packed array [b1 .. b2 : c1] of a2; var a5, a6 : array [b3 .. b4 : c2] of a3; procedure p2; function f1 : a2);
+procedure p1(a1, a2 : a1; a3, a4 : packed array [b1 .. b2 : c1] of a2; a5, a6 : array [b3 .. b4 : c2] of a3; var a7, a8 : a1; var a3, a4 : packed array [b1 .. b2 : c1] of a2; var a5, a6 : array [b3 .. b4 : c2] of a3; procedure p2; function f2 : integer);
 const t111 = 1;
 begin end;
-function f1(a1, a2 : a1; a3, a4 : packed array [b1 .. b2 : c1] of a2; a5, a6 : array [b3 .. b4 : c2] of a3; var a7, a8 : a1; var a3, a4 : packed array [b1 .. b2 : c1] of a2; var a5, a6 : array [b3 .. b4 : c2] of a3; procedure p2; function f1 : a2):a1;
+function f1(a1, a2 : a1; a3, a4 : packed array [b1 .. b2 : c1] of a2; a5, a6 : array [b3 .. b4 : c2] of a3; var a7, a8 : a1; var a3, a4 : packed array [b1 .. b2 : c1] of a2; var a5, a6 : array [b3 .. b4 : c2] of a3; procedure p3; function f3 : integer):boolean;
 var v1, v2 : 1 .. 2;
 begin end;
 begin
