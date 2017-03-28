@@ -17,7 +17,9 @@ import compiler.analysis.SemanticImpl;
 import compiler.core.Expression;
 import compiler.core.Type;
 import compiler.core.Variable;
+import compiler.core.operators.Not;
 import compiler.core.operators.Operator;
+import compiler.core.operators.UnaryOperator;
 import compiler.core.types.Bool;
 import compiler.core.types.CharArray;
 import compiler.core.types.VariableType;
@@ -208,9 +210,7 @@ public class CodeGenerator {
 		}
 	}
 	
-	public void declareVariable(Variable variable) throws Exception{
-		// FIXME REMOVE ME
-	}
+	
 	
 	public void assignment(Expression expression, String var) {
 		try {
@@ -238,6 +238,15 @@ public class CodeGenerator {
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
+	}
+	public Expression generateNotCode(Expression exp){
+		
+		UnaryOperator not = new Not();
+		not.setExpression(exp);
+		writeLine(not.getMnemonic(), String.valueOf( exp.getRegister()), String.valueOf( exp.getRegister()));
+		Expression expression = new Expression(new Type(exp.getType().getName()));
+		expression.setRegister(exp.getRegister());
+		return expression;
 	}
 
 	public void generateFinalAssemblyCode() throws IOException {

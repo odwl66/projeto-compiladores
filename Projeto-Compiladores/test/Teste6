@@ -2,12 +2,15 @@ program exFunction;
 
 var
    a, b, num1, num2, max, ret: integer;
+   bol1, bol2 : boolean;
 
 function max(var num1, num2: integer): integer;
 var
    result: integer;
    
 begin
+    bol1 := not true;
+    bol2 := bol1;
 	num1 := 1;
 	num2 := 2;
 	max := 2;

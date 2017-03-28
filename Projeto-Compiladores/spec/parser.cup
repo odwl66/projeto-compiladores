@@ -743,7 +743,8 @@ factor ::=
 	LPAREN expression:exp RPAREN {:Logger.print("Factor - expression");RESULT = exp;:} | 
 	NOT factor:fa {:Logger.print("Factor - not factor");
 					SemanticImpl.getInstance().getExpressionCheckingError((Expression)fa, new Expression("BOOLEAN", new Bool(true)));
-					RESULT = fa;:}
+					Expression expression = CodeGenerator.getInstance().generateNotCode((Expression) fa);
+					RESULT = expression;:}
 ;
 
 addition_operator ::=
