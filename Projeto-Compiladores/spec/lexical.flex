@@ -146,4 +146,5 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     
     /*gambis*/
     "~"								{ return symbol(sym.TIL); }
+    "^" 							{ return symbol(sym.FUNC); }
 }

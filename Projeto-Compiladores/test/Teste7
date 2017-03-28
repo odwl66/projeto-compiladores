@@ -23,7 +23,7 @@ end;
 begin
 a := 6;
 b := 7;
-~ findMin(a,b);
+~ findMan(a,b);
 
 end
 .

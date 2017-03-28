@@ -1,9 +1,10 @@
 program exFunction;
 
 var
-   a, b, num1, num2, max, ret: integer;
+   a, b, c,d, num1, num2, max, ret: integer;
 
-function max(var num1, num2: integer): integer;
+function max(var num1, num2, num3: integer; var b: String): integer;
+
 var
    result: integer;
    
@@ -21,7 +22,9 @@ end;
 begin
    a := 100;
    b := 200;
-   max := max(a,b);
+   c := 300;
+   d := 'casa';
+   max := max(a,b, c, d);
 
  
 end.
