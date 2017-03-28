@@ -1,16 +1,14 @@
 program exFunction;
 
 var
-   a, b, num1, num2, max, ret: integer;
-   bol1, bol2 : boolean;
+   a, b, c,d, num1, num2, max, ret: integer;
 
-function max(var num1, num2: integer): integer;
+function max(var num1, num2, num3: integer; var b: String): integer;
+
 var
    result: integer;
    
 begin
-    bol1 := not true;
-    bol2 := bol1;
 	num1 := 1;
 	num2 := 2;
 	max := 2;
@@ -24,7 +22,9 @@ end;
 begin
    a := 100;
    b := 200;
-   max := max(a,b);
+   c := 300;
+   d := 'casa';
+   max := max(a,b, c, d);
 
  
 end.
