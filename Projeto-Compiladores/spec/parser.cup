@@ -741,7 +741,9 @@ factor ::=
 	constant_identifier | 
 	bound_identifier | 
 	LPAREN expression:exp RPAREN {:Logger.print("Factor - expression");RESULT = exp;:} | 
-	NOT factor:fa {:Logger.print("Factor - not factor");RESULT = fa;:}
+	NOT factor:fa {:Logger.print("Factor - not factor");
+					SemanticImpl.getInstance().getExpressionCheckingError((Expression)fa, new Expression("BOOLEAN", new Bool(true)));
+					RESULT = fa;:}
 ;
 
 addition_operator ::=

@@ -208,7 +208,7 @@ public class SemanticImpl {
 			return leftExpression;
 		}
 		if (!checkTypeCompatibility(leftExpression.getType(), rightExpression.getType())) {
-			throw new Exception("Incompatible types!");
+			throw new Exception("Incompatible types! " + leftExpression.getType() + " " + rightExpression.getType());
 		}
 		return new Expression(getMajorType(leftExpression.getType(), rightExpression.getType()));
 	}
