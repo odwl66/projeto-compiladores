@@ -15,10 +15,14 @@ import java.util.Stack;
 
 import compiler.analysis.SemanticImpl;
 import compiler.core.Expression;
+import compiler.core.Function;
+import compiler.core.ScopedEntity;
 import compiler.core.Type;
 import compiler.core.Variable;
+import compiler.core.operators.Addition;
 import compiler.core.operators.Not;
 import compiler.core.operators.Operator;
+import compiler.core.operators.Subtraction;
 import compiler.core.operators.UnaryOperator;
 import compiler.core.types.Bool;
 import compiler.core.types.CharArray;
@@ -27,7 +31,7 @@ import compiler.util.*;
 
 public class CodeGenerator {
 	private static final String TAB = "\t";
-	
+	private static final String BR = "BR";
 	private static final String LD = "LD";
 	private static final String ST = "ST";
 	private static final String SP = "SP";
@@ -36,6 +40,8 @@ public class CodeGenerator {
 	private static CodeGenerator instance;
 	private Register currentRegister;
 	private Map<String, Variable> vars;
+	private Map<ScopedEntity, List<Integer>> scopedEntity;
+	private ScopedEntity currentScopedEntity;
 	private HashMap<Register, Variable> registers;
 	private Object currentValue;
 	
@@ -46,6 +52,7 @@ public class CodeGenerator {
 	private List<Instruction> ifInstructions = new LinkedList<>();
 	private List<Instruction> statementInstructions = new LinkedList<>();
 	private boolean isStatement = false;
+	private boolean isScopedEntity = false;
 	
 	private CodeGenerator() {
 		setAdress(100);
@@ -53,11 +60,11 @@ public class CodeGenerator {
 		currentRegister = Register.R1;
 		registers = new HashMap<Register, Variable>();
 		vars = new HashMap<>();
+		scopedEntity = new HashMap<>();
 	}
 	
 	private void initCode(){
 		writeLine(LD, SP, "#8000");
-		iterateAddress();
 	}
 	
 	private void setAdress(int value){
@@ -74,6 +81,44 @@ public class CodeGenerator {
 	
 	public int getAddress() {
 		return address;
+	}
+	
+	public void setScopedEntity(ScopedEntity id){
+		this.isScopedEntity = true;
+		List<Integer> listTemp = new LinkedList<Integer>();
+		listTemp.add(0,getAddress());
+		listTemp.add(1,getAddress());
+		this.scopedEntity.put(id, listTemp);
+
+		
+		this.currentScopedEntity = id;	
+	}
+	
+	public ScopedEntity getCurrentScopedEntity(){
+		return this.currentScopedEntity;
+	}
+	
+//	private void setInitScopedEntity(ScopedEntity id){
+//		this.scopedEntity.get(id).add(1, getAddress());
+//	}
+//	private void setInitScopedEntity(){
+//		this.scopedEntity.get(currentScopedEntity).add(1, getAddress());
+//	}
+	
+	public void setFinishScopedEntity(ScopedEntity id){
+		
+		this.scopedEntity.get(id).set(1, getAddress());
+		if(id instanceof Function){
+			writeLine(BR, "*0(SP)");
+		}
+		this.isScopedEntity = false;
+	}
+	
+	private Integer getInitScopedEntity(ScopedEntity id){
+		return this.scopedEntity.get(id).get(0);
+	}
+	private Integer getFinishScopedEntity(ScopedEntity id){
+		return this.scopedEntity.get(id).get(1);
 	}
 	
 	private void assingRegister(Variable v) {
@@ -131,15 +176,11 @@ public class CodeGenerator {
 
 	public void declareIfStatement(Expression exp) {
 		isStatement = true;
-		System.out.println("====> declareIfStatement - START IF");
-		System.out.println("====> declareIfStatement - exp: " + exp.getRegister());
-
 		currentIf = new Instruction(getAddress(), "BEQZ " + String.valueOf(exp.getRegister()) + ", ");
 		iterateAddress();
 	}
 	
 	public void outOfIf() {
-		System.out.println("====> declareIfStatement - END IF3");
 		if (!isStatement) {
 			return;
 		}
@@ -248,6 +289,21 @@ public class CodeGenerator {
 		expression.setRegister(exp.getRegister());
 		return expression;
 	}
+	
+	public void generateCallCode(ScopedEntity id){
+			Operator add = new Addition();
+			Operator sub = new Subtraction();
+			Integer seBegin = getInitScopedEntity(id);	
+			Integer seEnd = getFinishScopedEntity(id);
+			int initTemp = seBegin / 8;
+			int finishTemp = seEnd / 8;
+			Integer blockSize = finishTemp - initTemp + 1;
+			writeLine(add.getMnemonic(), String.valueOf(Register.SP), String.valueOf( String.valueOf(Register.SP)), "#" + blockSize);
+			writeLine(ST, String.valueOf(Register._SP), "#" + String.valueOf(getAddress() + 16));
+			writeLine(BR, String.valueOf(seBegin));
+			writeLine(sub.getMnemonic(), String.valueOf(Register.SP), String.valueOf( String.valueOf(Register.SP)), "#" + blockSize);
+			
+	}
 
 	public void generateFinalAssemblyCode() throws IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(new File("assembly.txt")));
@@ -259,6 +315,7 @@ public class CodeGenerator {
 		} finally {
 			writer.close();
 		}
+		this.scopedEntity.clear();
 	}
 	
 	private void writeLine(String op, String field1, String field2, String field3) {
