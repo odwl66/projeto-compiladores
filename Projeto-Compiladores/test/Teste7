@@ -1,10 +1,11 @@
 program exProcedure;
 
 label 10, 11;
-var x, y, a, b, z, m: integer;
+var x, y, a, b, c, z, m: integer;
 	bol: boolean;
 
 procedure findMin(var z, m: integer); 
+
 begin
 	bol := not true;
 	x := 1;
@@ -23,7 +24,8 @@ end;
 begin
 a := 6;
 b := 7;
-~ findMan(a,b);
+c := 8;
+~ findMin(a,b);
 
 end
 .

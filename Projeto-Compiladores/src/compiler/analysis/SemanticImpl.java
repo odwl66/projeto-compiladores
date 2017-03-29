@@ -359,18 +359,32 @@ public class SemanticImpl {
 			System.exit(1);
 		} else {
 			identifiers.add(identifier);
+			System.out.println("Identifier: " + identifier);
 		}
 	}
+	
 
-	public boolean checkFunctionOverload(String identifier, ArrayList<String> params) {
+	public boolean checkFunctionOverload(String identifier) {
 		String searchedIdentifier = identifier.toLowerCase();
-		if (functions.containsKey(searchedIdentifier) || identifiers.contains(searchedIdentifier)) {
-			ArrayList<Object> existingParams = funcParams.get(searchedIdentifier);
-			if (existingParams.equals(params)) {
-				System.out.println("It is not possible to create function " + identifier + ": duplicated params");
-				return false;
-			}
+		if (!functions.containsKey(searchedIdentifier)) {
+			System.out.println("This function:" + identifier + " is not existis");
+			System.exit(1);
+			return false;
+			
 		}
+		System.out.println("This function " + identifier + "existis");
+		return true;
+	}
+	
+	public boolean checkProcedureOverload(String identifier) {
+		String searchedIdentifier = identifier.toLowerCase();
+		if (!procedures.containsKey(searchedIdentifier)) {
+			System.out.println("This procedure:" + identifier + " is not existis");
+			System.exit(1);
+			return false;
+			
+		}
+		System.out.println("This procedure " + identifier + "existis");
 		return true;
 	}
 

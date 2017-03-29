@@ -617,7 +617,8 @@ pointer_variable ::=
 ;
 
 assignment_statement ::=
-   FUNC function_identifier ASSIGNMENT expression {:Logger.print("Assignment Statement Function - line 2");:} |
+   IDENTIFIER:id ASSIGNMENT expression:e {:Logger.print("Assignment Statement Function - line 2");
+   														SemanticImpl.getInstance().checkFunctionOverload(id); :} |
    variable:var ASSIGNMENT expression:e {:Logger.print("Assignment Statement - line 1");
   										SemanticImpl.getInstance().initializeVariable((String) var);
   										CodeGenerator.getInstance().assignment((Expression) e, (String) var);:}
@@ -631,7 +632,8 @@ structured_statement ::=
 ;
 
 procedure_statement ::=
-  {:Logger.print("Procedure statement - line 1");:} TIL IDENTIFIER actual_parameter_list 
+   TIL IDENTIFIER:id actual_parameter_list {: Logger.print("Procedure statement - line 1");
+   										SemanticImpl.getInstance().checkProcedureOverload(id);:}
 ;
 
 goto_statement ::=
