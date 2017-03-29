@@ -16,6 +16,7 @@ import java.util.Stack;
 import compiler.analysis.SemanticImpl;
 import compiler.core.Expression;
 import compiler.core.Function;
+import compiler.core.Procedure;
 import compiler.core.ScopedEntity;
 import compiler.core.Type;
 import compiler.core.Variable;
@@ -53,6 +54,7 @@ public class CodeGenerator {
 	private List<Instruction> statementInstructions = new LinkedList<>();
 	private boolean isStatement = false;
 	private boolean isScopedEntity = false;
+	private int afterScopedEntityAddress;
 	
 	private CodeGenerator() {
 		setAdress(100);
@@ -89,29 +91,25 @@ public class CodeGenerator {
 		listTemp.add(0,getAddress());
 		listTemp.add(1,getAddress());
 		this.scopedEntity.put(id, listTemp);
-
-		
 		this.currentScopedEntity = id;	
 	}
 	
 	public ScopedEntity getCurrentScopedEntity(){
 		return this.currentScopedEntity;
 	}
-	
-//	private void setInitScopedEntity(ScopedEntity id){
-//		this.scopedEntity.get(id).add(1, getAddress());
-//	}
-//	private void setInitScopedEntity(){
-//		this.scopedEntity.get(currentScopedEntity).add(1, getAddress());
-//	}
+
 	
 	public void setFinishScopedEntity(ScopedEntity id){
 		
 		this.scopedEntity.get(id).set(1, getAddress());
 		if(id instanceof Function){
 			writeLine(BR, "*0(SP)");
+		} else if (id instanceof Procedure){
+			writeLine("BR_ScopedEntity", String.valueOf( 0));
 		}
+		
 		this.isScopedEntity = false;
+		
 	}
 	
 	private Integer getInitScopedEntity(ScopedEntity id){
@@ -302,6 +300,7 @@ public class CodeGenerator {
 			writeLine(ST, String.valueOf(Register._SP), "#" + String.valueOf(getAddress() + 16));
 			writeLine(BR, String.valueOf(seBegin));
 			writeLine(sub.getMnemonic(), String.valueOf(Register.SP), String.valueOf( String.valueOf(Register.SP)), "#" + blockSize);
+			this.afterScopedEntityAddress = getAddress();
 			
 	}
 
@@ -309,8 +308,15 @@ public class CodeGenerator {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(new File("assembly.txt")));
 		try {
 			for (Instruction instruction : code) {
-				writer.write(instruction.toString());
-				writer.newLine();
+				if(instruction.toString().contains("BR_ScopedEntity")){
+					writer.write(instruction.toString().substring(0, 4)+ TAB+
+							String.format(Locale.getDefault(), "%s %s",
+									BR, this.afterScopedEntityAddress));
+					writer.newLine();
+				} else {
+					writer.write(instruction.toString());
+					writer.newLine();
+				}
 			}
 		} finally {
 			writer.close();
@@ -327,6 +333,7 @@ public class CodeGenerator {
 		} else {
 			code.add(instruction);
 		}
+		
 		iterateAddress();
 	}
 	
